@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neuro-Symbolic Multi-Hazard &amp; Defense AI</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+<!-- ── Sidebar ─────────────────────────────────────────────────────────── -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h2>&#9881; Configuration</h2>
+    </div>
+
+    <div class="sidebar-section">
+        <label class="sidebar-label">Operating Mode</label>
+        <select id="cfg-mode">
+            <option value="disaster">Multi-Hazard Disaster</option>
+            <option value="defense">Defense Monitoring</option>
+            <option value="combined">Combined</option>
+        </select>
+    </div>
+
+    <div class="sidebar-section">
+        <h3>&#128205; Region Parameters</h3>
+        <label>Region Name</label>
+        <input type="text" id="cfg-region" value="Coastal Sector A">
+        <label>Population Density</label>
+        <input type="range" id="cfg-population" min="0" max="5000" value="800" step="50">
+        <span class="range-val" id="val-population">800</span>
+        <label>Elevation (m ASL)</label>
+        <input type="range" id="cfg-elevation" min="0" max="200" value="15">
+        <span class="range-val" id="val-elevation">15</span>
+    </div>
+
+    <div class="sidebar-section">
+        <h3>&#127782; Environmental Data</h3>
+        <label>Rainfall (mm/24h)</label>
+        <input type="range" id="cfg-rainfall" min="0" max="500" value="50" step="10">
+        <span class="range-val" id="val-rainfall">50</span>
+        <label>Soil Moisture (0-1)</label>
+        <input type="range" id="cfg-soil" min="0" max="100" value="50">
+        <span class="range-val" id="val-soil">0.50</span>
+        <label>Wind Speed (km/h)</label>
+        <input type="range" id="cfg-wind" min="0" max="200" value="20" step="5">
+        <span class="range-val" id="val-wind">20</span>
+        <label>Temperature (&deg;C)</label>
+        <input type="range" id="cfg-temp" min="-10" max="50" value="30">
+        <span class="range-val" id="val-temp">30</span>
+        <label>Terrain Slope (&deg;)</label>
+        <input type="range" id="cfg-slope" min="0" max="60" value="10">
+        <span class="range-val" id="val-slope">10</span>
+    </div>
+
+    <div class="sidebar-section defense-params" id="defense-params" style="display:none;">
+        <h3>&#128737; Defense Parameters</h3>
+        <label>Detected Vehicles</label>
+        <input type="range" id="cfg-vehicles" min="0" max="20" value="0">
+        <span class="range-val" id="val-vehicles">0</span>
+        <label>Movement Direction</label>
+        <select id="cfg-movement">
+            <option value="null">None</option>
+            <option value="border">Border</option>
+            <option value="inland">Inland</option>
+            <option value="lateral">Lateral</option>
+        </select>
+        <label>Region Type</label>
+        <select id="cfg-regiontype">
+            <option value="normal">Normal</option>
+            <option value="border">Border</option>
+            <option value="restricted_zone">Restricted Zone</option>
+        </select>
+        <label>Distance to Border (km)</label>
+        <input type="range" id="cfg-proximity" min="0" max="50" value="20" step="0.5">
+        <span class="range-val" id="val-proximity">20.0</span>
+    </div>
+
+    <div class="sidebar-footer">
+        <small><strong>Architecture:</strong> U-Net + ResNet50 + ViT + YOLOv8 &rarr; Symbolic Rules &rarr; Decision Engine</small>
+    </div>
+</aside>
+
+<!-- ── Main Content ────────────────────────────────────────────────────── -->
+<main class="main-content">
+    <header class="top-header">
+        <button class="menu-btn" id="menu-btn">&#9776;</button>
+        <h1>&#128737; Neuro-Symbolic Multi-Hazard &amp; Defense Decision AI</h1>
+    </header>
+    <p class="subtitle">
+        Real-time AI system for <strong>disaster detection</strong> (floods, landslides, cyclones, fires)
+        and <strong>defense monitoring</strong> (border vehicles, restricted zones) &mdash; powered by
+        <strong>deep learning + symbolic reasoning</strong> for explainable decisions.
+    </p>
+
+    <!-- Tab Bar -->
+    <nav class="tab-bar">
+        <button class="tab-btn active" data-tab="analysis">&#128269; Analysis</button>
+        <button class="tab-btn" data-tab="simulation">&#128260; Simulation</button>
+        <button class="tab-btn" data-tab="xai">&#129504; AI&nbsp;Explanations</button>
+        <button class="tab-btn" data-tab="models">&#128208; Architecture</button>
+        <button class="tab-btn" data-tab="defense">&#128737; Defense</button>
+        <button class="tab-btn" data-tab="history">&#128203; History</button>
+    </nav>
+
+    <!-- ═══════════ TAB 1: ANALYSIS ═══════════ -->
+    <section class="tab-panel active" id="tab-analysis">
+        <div class="panel-grid two-col">
+            <!-- Left: Upload -->
+            <div class="card">
+                <h2>&#128225; Satellite / Surveillance Image</h2>
+                <form id="analyze-form" enctype="multipart/form-data">
+                    <div class="upload-area" id="upload-area">
+                        <p>Drop an image here or <label class="file-label">browse<input type="file" id="analyze-file" name="image" accept="image/*" hidden></label></p>
+                        <img id="preview-img" class="preview-img" alt="">
+                    </div>
+                    <label>Hazard Types</label>
+                    <div class="checkbox-row">
+                        <label><input type="checkbox" name="hazards" value="flood" checked> Flood</label>
+                        <label><input type="checkbox" name="hazards" value="landslide" checked> Landslide</label>
+                        <label><input type="checkbox" name="hazards" value="cyclone"> Cyclone</label>
+                        <label><input type="checkbox" name="hazards" value="fire"> Fire</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">&#9654; Run Analysis</button>
+                </form>
+            </div>
+            <!-- Right: Results -->
+            <div class="card" id="analysis-results">
+                <h2>&#128269; Multi-Hazard Analysis Results</h2>
+                <div id="analysis-output">
+                    <p class="placeholder">Upload a satellite image to run multi-hazard analysis.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ TAB 2: SIMULATION ═══════════ -->
+    <section class="tab-panel" id="tab-simulation">
+        <div class="card">
+            <h2>&#128260; Real-Time Multi-Hazard Simulation</h2>
+            <p>Simulate continuous satellite data streaming with automatic hazard detection and symbolic reasoning.</p>
+            <div class="panel-grid two-col">
+                <div>
+                    <label>Hazards to Simulate</label>
+                    <div class="checkbox-row">
+                        <label><input type="checkbox" class="sim-hazard" value="flood" checked> Flood</label>
+                        <label><input type="checkbox" class="sim-hazard" value="landslide" checked> Landslide</label>
+                        <label><input type="checkbox" class="sim-hazard" value="cyclone" checked> Cyclone</label>
+                        <label><input type="checkbox" class="sim-hazard" value="fire"> Fire</label>
+                        <label><input type="checkbox" class="sim-hazard" value="defense"> Defense</label>
+                    </div>
+                    <label>Region</label>
+                    <input type="text" id="sim-region" value="Simulation Zone Alpha" style="width:100%;">
+                </div>
+                <div style="display:flex;align-items:flex-end;">
+                    <button class="btn btn-primary" id="btn-simulate">&#9654; Run Simulation Cycle</button>
+                </div>
+            </div>
+        </div>
+        <div id="simulation-output"></div>
+    </section>
+
+    <!-- ═══════════ TAB 3: AI EXPLANATIONS ═══════════ -->
+    <section class="tab-panel" id="tab-xai">
+        <div class="card">
+            <h2>&#129504; Explainable AI &mdash; Why These Decisions?</h2>
+            <p>The neuro-symbolic approach provides <strong>full transparency</strong>: every decision is traceable through neural predictions &rarr; feature extraction &rarr; symbolic rules &rarr; actions.</p>
+        </div>
+        <div id="xai-output">
+            <p class="placeholder">Run an analysis or simulation to see AI explanations.</p>
+        </div>
+
+        <!-- Innovation comparison table -->
+        <div class="card" style="margin-top:1rem;">
+            <h3>&#128161; Innovation: Neuro-Symbolic vs Traditional AI</h3>
+            <table class="data-table">
+                <thead>
+                    <tr><th>Feature</th><th>Traditional DL</th><th>Neuro-Symbolic AI (Ours)</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Decision Explainability</td><td class="bad">&#10060; Black-box</td><td class="good">&#9989; Symbolic rule trace + explanations</td></tr>
+                    <tr><td>Uncertainty Quantification</td><td class="bad">&#10060; Point estimates</td><td class="good">&#9989; Bayesian posterior + confidence</td></tr>
+                    <tr><td>Policy Compliance</td><td class="bad">&#10060; Not enforced</td><td class="good">&#9989; Symbolic rules enforce policy</td></tr>
+                    <tr><td>Multi-Source Fusion</td><td class="bad">&#10060; Single model</td><td class="good">&#9989; Ensemble (CNN + ViT + YOLO) + Bayesian</td></tr>
+                    <tr><td>Audit Trail</td><td class="bad">&#10060; No logging</td><td class="good">&#9989; Full decision log with timestamps</td></tr>
+                    <tr><td>Multi-Hazard Coverage</td><td class="bad">&#10060; Single hazard</td><td class="good">&#9989; Flood + Landslide + Cyclone + Fire</td></tr>
+                    <tr><td>Defense Integration</td><td class="bad">&#10060; Separate system</td><td class="good">&#9989; Unified defense monitoring</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ═══════════ TAB 4: MODEL ARCHITECTURE ═══════════ -->
+    <section class="tab-panel" id="tab-models">
+        <div class="card">
+            <h2>&#128208; Deep Learning Model Architecture</h2>
+            <table class="data-table">
+                <thead>
+                    <tr><th>Model</th><th>Type</th><th>Algorithm</th><th>Hazard</th><th>Purpose</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>U-Net CNN</strong></td><td>Segmentation</td><td>Encoder &rarr; Bottleneck &rarr; Decoder (skip connections)</td><td>Flood</td><td>Pixel-level flood boundary detection</td></tr>
+                    <tr><td><strong>ResNet50</strong></td><td>Classification</td><td>Transfer learning + custom head</td><td>Landslide</td><td>Binary landslide/stable classification</td></tr>
+                    <tr><td><strong>Vision Transformer</strong></td><td>Classification</td><td>Patch embedding &rarr; Transformer encoder &rarr; [CLS] head</td><td>Cyclone</td><td>Large-scale damage pattern recognition</td></tr>
+                    <tr><td><strong>YOLOv8 (Fire)</strong></td><td>Object Detection</td><td>CSPDarknet &rarr; FPN &rarr; Detection head</td><td>Fire</td><td>Fire/smoke region detection</td></tr>
+                    <tr><td><strong>YOLOv8 (Defense)</strong></td><td>Object Detection</td><td>CSPDarknet &rarr; FPN &rarr; Detection head</td><td>Defense</td><td>Military vehicle/equipment detection</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3>&#128260; Complete System Architecture</h3>
+            <pre class="arch-diagram">
+&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+&#9474;  DATA LAYER (ESA Sentinel-2, NASA MODIS, DEM, Weather)    &#9474;
+&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
+                           &#8595;
+&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+&#9474;  PREPROCESSING LAYER                                      &#9474;
+&#9474;  Image Processing + NDWI/NDVI + Feature Extraction        &#9474;
+&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
+                           &#8595;
+&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+&#9474;  DEEP LEARNING DETECTION MODELS                           &#9474;
+&#9474;                                                            &#9474;
+&#9474;  Flood: U-Net CNN Segmentation                            &#9474;
+&#9474;  Landslide: ResNet50 + CNN Classifier                     &#9474;
+&#9474;  Cyclone: Vision Transformer (ViT)                        &#9474;
+&#9474;  Fire: YOLOv8 Object Detection                            &#9474;
+&#9474;  Defense: YOLOv8 Object Detection                         &#9474;
+&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
+                           &#8595;
+&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+&#9474;  NEURO-SYMBOLIC REASONING ENGINE                          &#9474;
+&#9474;  Symbolic Rules + Decision Engine + Multi-Hazard Logic    &#9474;
+&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9516;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
+                           &#8595;
+&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+&#9474;  REAL-TIME DECISION DASHBOARD (This Dashboard)            &#9474;
+&#9474;  Event Map + Risk Level + AI Explanation + Actions        &#9474;
+&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
+            </pre>
+        </div>
+
+        <div class="card">
+            <h3>&#128200; Accuracy Improvement Techniques</h3>
+            <p>To achieve 90%+ accuracy, the system uses:</p>
+            <ol>
+                <li><strong>Transfer Learning</strong> &mdash; ResNet50 pretrained on ImageNet, fine-tuned for landslide detection</li>
+                <li><strong>Data Augmentation</strong> &mdash; Random flips, rotations, brightness adjustments during training</li>
+                <li><strong>Ensemble Models</strong> &mdash; Average predictions from multiple architectures:<br>
+                    <code>Prediction = 0.5 &times; (CNN output) + 0.5 &times; (Transformer output)</code>
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- ═══════════ TAB 5: DEFENSE MONITOR ═══════════ -->
+    <section class="tab-panel" id="tab-defense">
+        <div class="card">
+            <h2>&#128737; Defense Monitoring Dashboard</h2>
+            <p>Border vehicle movement detection and restricted zone monitoring using YOLOv8 object detection + symbolic defense rules.</p>
+        </div>
+        <div class="panel-grid two-col">
+            <div class="card">
+                <h3>Upload Surveillance Image</h3>
+                <form id="defense-form" enctype="multipart/form-data">
+                    <div class="upload-area" id="defense-upload-area">
+                        <p>Drop an image here or <label class="file-label">browse<input type="file" id="defense-file" name="image" accept="image/*" hidden></label></p>
+                        <img id="defense-preview" class="preview-img" alt="">
+                    </div>
+                    <button type="submit" class="btn btn-primary">&#9654; Run Defense Analysis</button>
+                </form>
+            </div>
+            <div class="card" id="defense-results">
+                <h3>Defense Analysis Results</h3>
+                <div id="defense-output">
+                    <p class="placeholder">Upload a surveillance image to run defense analysis.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top:1rem;">
+            <h3>Threat Classification Rules</h3>
+            <table class="data-table">
+                <thead>
+                    <tr><th>Condition</th><th>Threat Level</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Vehicles &gt; 3 moving toward border in restricted zone</td><td><span class="badge badge-red">CRITICAL</span></td><td>Alert military, deploy rapid reaction force</td></tr>
+                    <tr><td>Threat &gt; 70% with military objects near border</td><td><span class="badge badge-orange">HIGH</span></td><td>Aerial surveillance, brief command</td></tr>
+                    <tr><td>Temporary installations detected</td><td><span class="badge badge-yellow">ELEVATED</span></td><td>Deploy recon drone, monitor</td></tr>
+                    <tr><td>Unusual vehicle count in border zone</td><td><span class="badge badge-yellow">ELEVATED</span></td><td>Increase satellite monitoring</td></tr>
+                    <tr><td>Moderate threat indicators</td><td><span class="badge badge-blue">GUARDED</span></td><td>Flag for analyst review</td></tr>
+                    <tr><td>All clear</td><td><span class="badge badge-green">SAFE</span></td><td>Routine monitoring</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ═══════════ TAB 6: DECISION HISTORY ═══════════ -->
+    <section class="tab-panel" id="tab-history">
+        <div class="card">
+            <h2>&#128203; Decision History &amp; Audit Trail</h2>
+            <div class="history-actions">
+                <button class="btn" id="btn-refresh-history">&#128260; Refresh</button>
+                <button class="btn btn-danger" id="btn-clear-history">&#128465; Clear Log</button>
+            </div>
+        </div>
+
+        <div class="card" id="history-summary"></div>
+        <div class="card">
+            <h3>Timeline</h3>
+            <div id="timeline-chart"></div>
+        </div>
+        <div class="card">
+            <h3>Full Decision Log</h3>
+            <div class="table-wrap">
+                <table class="data-table" id="history-table">
+                    <thead>
+                        <tr><th>Timestamp</th><th>Region</th><th>Event</th><th>Level</th><th>Priority</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- Loading overlay -->
+<div class="loading-overlay" id="loading">
+    <div class="spinner"></div>
+    <p>Running neuro-symbolic pipeline&hellip;</p>
+</div>
+
+<script src="/static/js/dashboard.js"></script>
+</body>
+</html>

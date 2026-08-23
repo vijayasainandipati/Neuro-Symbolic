@@ -1,0 +1,266 @@
+{
+  "poc_version": "1.0",
+  "generated_at": "2026-04-06T14:14:55Z",
+  "total_scenarios": 6,
+  "decisions": [
+    {
+      "scenario_id": "A",
+      "scenario_name": "Coastal Flood Event",
+      "domain": "DISASTER",
+      "timestamp": "2026-04-06T14:14:54Z",
+      "image_source": "Sentinel-1 SAR — Coastal Region (12.5m resolution)",
+      "neural_detections": {
+        "flood_probability": 0.88,
+        "rainfall_mm": 178.0,
+        "elevation_m": 3.5
+      },
+      "context_factors": {
+        "region": "Coastal Zone Delta",
+        "population_density": 900,
+        "elevation_m": 3.5,
+        "rainfall_mm_24h": 178.0,
+        "soil_moisture": 0.82
+      },
+      "rules_applied": [
+        "RULE-F1: flood_prob > 0.80 AND population > 500 → RED / Evacuate",
+        "RULE-F6: rainfall > 150mm → escalation amplifier"
+      ],
+      "alert_level": "RED",
+      "priority": 5,
+      "actions": [
+        "Evacuate Region Immediately",
+        "Deploy Rescue Teams",
+        "Activate Emergency Shelters"
+      ],
+      "reasons": [
+        "Flood probability (88.0%) exceeded critical threshold (80%) with high population density (900)"
+      ],
+      "xai_explanation": "[Scenario A - DISASTER XAI Explanation]\n  1. NEURAL PERCEPTION : flood_probability=88.00%, rainfall_mm=17800.00%, elevation_m=350.00%\n  2. EVIDENCE FUSION   : Bayesian fusion: P(flood|SAR)=0.91, P(flood|rainfall)=0.87 → posterior = 0.94 — dominant evidence: SAR imagery\n  3. POLICY DECISION   : RED triggered — Flood probability (88.0%) exceeded critical threshold (80%) with high population density (900)",
+      "confidence": "HIGH",
+      "audit_trail": {
+        "engine_version": "1.0-POC",
+        "rule_set": "neuro_symbolic_v1",
+        "decision_method": "symbolic_rule_engine + bayesian_fusion"
+      }
+    },
+    {
+      "scenario_id": "B",
+      "scenario_name": "Urban Fire Outbreak",
+      "domain": "DISASTER",
+      "timestamp": "2026-04-06T14:14:54Z",
+      "image_source": "MODIS Terra Band 21/22 — Urban Thermal Overlay",
+      "neural_detections": {
+        "fire_detected": true,
+        "fire_confidence": 0.91,
+        "temperature_c": 44.2,
+        "wind_speed_kmh": 38.0
+      },
+      "context_factors": {
+        "region": "Industrial District North",
+        "population_density": 640,
+        "temperature_c": 44.2,
+        "wind_speed_kmh": 38.0
+      },
+      "rules_applied": [
+        "RULE-FR1: fire_detected AND confidence > 0.80 AND population > 500 → RED",
+        "RULE-FR-WIND: wind > 30 km/h → fire spread amplifier",
+        "RULE-FR-TEMP: temp > 40°C → intensity amplifier"
+      ],
+      "alert_level": "RED",
+      "priority": 5,
+      "actions": [
+        "Deploy Fire Brigade Immediately",
+        "Evacuate Nearby Residents",
+        "Activate Fire Hydrant Network",
+        "Request Aerial Firefighting Support"
+      ],
+      "reasons": [
+        "Fire detected with high confidence (91.0%) in populated area (640)",
+        "Wind speed (38.0km/h) may accelerate fire spread",
+        "Extreme heat (44.2°C) increases fire intensity"
+      ],
+      "xai_explanation": "[Scenario B - DISASTER XAI Explanation]\n  1. NEURAL PERCEPTION : fire_detected=True, fire_confidence=91.00%, temperature_c=4420.00%, wind_speed_kmh=3800.00%\n  2. EVIDENCE FUSION   : YOLOv8 fire head confidence=0.91; thermal band corroboration raises posterior above 0.88 threshold.\n  3. POLICY DECISION   : RED triggered — Fire detected with high confidence (91.0%) in populated area (640)",
+      "confidence": "HIGH",
+      "audit_trail": {
+        "engine_version": "1.0-POC",
+        "rule_set": "neuro_symbolic_v1",
+        "decision_method": "symbolic_rule_engine + bayesian_fusion"
+      }
+    },
+    {
+      "scenario_id": "C",
+      "scenario_name": "Landslide Risk Assessment",
+      "domain": "DISASTER",
+      "timestamp": "2026-04-06T14:14:54Z",
+      "image_source": "Sentinel-2 MSI — Western Ghats Hillside Sector",
+      "neural_detections": {
+        "landslide_probability": 0.73,
+        "terrain_slope_degrees": 38,
+        "soil_moisture": 0.76,
+        "rainfall_mm": 112.0
+      },
+      "context_factors": {
+        "region": "Western Ghats Sector 7",
+        "population_density": 320,
+        "terrain_slope_degrees": 38,
+        "rainfall_mm_24h": 112.0,
+        "soil_moisture": 0.76
+      },
+      "rules_applied": [
+        "RULE-LS2: landslide_prob > 0.60 AND rainfall > 100 mm → ORANGE",
+        "RULE-LS-POP: population > 500 in affected zone → priority boost"
+      ],
+      "alert_level": "ORANGE",
+      "priority": 4,
+      "actions": [
+        "Issue Landslide Warning",
+        "Evacuate Vulnerable Settlements",
+        "Restrict Vehicle Movement on Slopes"
+      ],
+      "reasons": [
+        "Landslide probability (73.0%) elevated with heavy rainfall (112.0mm)"
+      ],
+      "xai_explanation": "[Scenario C - DISASTER XAI Explanation]\n  1. NEURAL PERCEPTION : landslide_probability=73.00%, terrain_slope_degrees=38, soil_moisture=76.00%, rainfall_mm=11200.00%\n  2. EVIDENCE FUSION   : ResNet50 landslide classifier: prob=0.73; soil moisture index confirms saturated conditions.\n  3. POLICY DECISION   : ORANGE triggered — Landslide probability (73.0%) elevated with heavy rainfall (112.0mm)",
+      "confidence": "MEDIUM-HIGH",
+      "audit_trail": {
+        "engine_version": "1.0-POC",
+        "rule_set": "neuro_symbolic_v1",
+        "decision_method": "symbolic_rule_engine + bayesian_fusion"
+      }
+    },
+    {
+      "scenario_id": "D",
+      "scenario_name": "Cyclone Track Landfall",
+      "domain": "DISASTER",
+      "timestamp": "2026-04-06T14:14:54Z",
+      "image_source": "INSAT-3D — Bay of Bengal Cyclone Track (VIS+IR)",
+      "neural_detections": {
+        "damage_class": "severe_damage",
+        "wind_speed_kmh": 148.0,
+        "infrastructure_density": 0.72
+      },
+      "context_factors": {
+        "region": "Bay of Bengal Coastal Strip",
+        "population_density": 1200,
+        "wind_speed_kmh": 148.0,
+        "infrastructure_density": 0.72
+      },
+      "rules_applied": [
+        "RULE-CY1: damage=severe AND wind > 120 km/h → RED Emergency",
+        "RULE-CY-INFRA: infrastructure_density > 0.7 → amplifier"
+      ],
+      "alert_level": "RED",
+      "priority": 5,
+      "actions": [
+        "Declare State of Emergency",
+        "Deploy National Disaster Response Force",
+        "Evacuate Coastal Population Immediately",
+        "Suspend All Transportation"
+      ],
+      "reasons": [
+        "Severe cyclone damage detected with extreme winds (148.0km/h) — Category 3+ impact",
+        "High infrastructure density (0.7) increases potential damage"
+      ],
+      "xai_explanation": "[Scenario D - DISASTER XAI Explanation]\n  1. NEURAL PERCEPTION : damage_class=severe_damage, wind_speed_kmh=14800.00%, infrastructure_density=72.00%\n  2. EVIDENCE FUSION   : ViT damage classifier: severe_damage (conf=0.86); wind speed 148 km/h → Category 4 classification.\n  3. POLICY DECISION   : RED triggered — Severe cyclone damage detected with extreme winds (148.0km/h) — Category 3+ impact",
+      "confidence": "HIGH",
+      "audit_trail": {
+        "engine_version": "1.0-POC",
+        "rule_set": "neuro_symbolic_v1",
+        "decision_method": "symbolic_rule_engine + bayesian_fusion"
+      }
+    },
+    {
+      "scenario_id": "E",
+      "scenario_name": "Border Defense Intrusion",
+      "domain": "DEFENSE",
+      "timestamp": "2026-04-06T14:14:54Z",
+      "image_source": "Synthetic Aperture Radar — Northern Border Restricted Zone",
+      "neural_detections": {
+        "threat_score": 0.92,
+        "object_class": "military_vehicle",
+        "num_vehicles": 5,
+        "proximity_to_border_km": 2.5
+      },
+      "context_factors": {
+        "sector": "Northern Border — Restricted Zone Alpha",
+        "num_vehicles_detected": 5,
+        "movement_direction": "border",
+        "region_type": "restricted_zone",
+        "proximity_to_border_km": 2.5
+      },
+      "rules_applied": [
+        "RULE-D1: num_vehicles > 3 AND movement=border AND restricted_zone → CRITICAL",
+        "RULE-D-PROX: proximity < 5 km → proximity amplifier"
+      ],
+      "threat_level": "CRITICAL",
+      "priority": 5,
+      "actions": [
+        "Alert Military Command Immediately",
+        "Deploy Rapid Reaction Force",
+        "Activate Border Defense Systems"
+      ],
+      "reasons": [
+        "5 armoured vehicles moving toward border in restricted zone"
+      ],
+      "xai_explanation": "[Scenario E - DEFENSE XAI Explanation]\n  1. NEURAL PERCEPTION : threat_score=92.00%, object_class=military_vehicle, num_vehicles=5, proximity_to_border_km=250.00%\n  2. EVIDENCE FUSION   : DefenseObjectClassifier: military_vehicle (conf=0.89), ThreatScoreEstimator: 0.92 — high-confidence CRITICAL.\n  3. POLICY DECISION   : CRITICAL triggered — 5 armoured vehicles moving toward border in restricted zone",
+      "confidence": "HIGH",
+      "audit_trail": {
+        "engine_version": "1.0-POC",
+        "rule_set": "neuro_symbolic_v1",
+        "decision_method": "symbolic_rule_engine + bayesian_fusion"
+      }
+    },
+    {
+      "scenario_id": "F",
+      "scenario_name": "Compound Flood + Landslide",
+      "domain": "DISASTER",
+      "timestamp": "2026-04-06T14:14:55Z",
+      "image_source": "Sentinel-1 + Sentinel-2 Fusion — Northeast Hill Corridor",
+      "neural_detections": {
+        "flood_probability": 0.85,
+        "landslide_probability": 0.82,
+        "rainfall_mm": 195.0,
+        "soil_moisture": 0.88,
+        "terrain_slope_degrees": 34
+      },
+      "context_factors": {
+        "region": "Northeast Hill Corridor",
+        "population_density": 780,
+        "elevation_m": 6.0,
+        "rainfall_mm_24h": 195.0,
+        "terrain_slope_degrees": 34,
+        "soil_moisture": 0.88
+      },
+      "rules_applied": [
+        "RULE-F1: flood_prob > 0.80 AND population > 500 → RED",
+        "RULE-LS1: landslide_prob > 0.80 AND slope > 30 → RED",
+        "RULE-MH2: Landslide + Flood → compound debris dam risk → escalate"
+      ],
+      "alert_level": "RED",
+      "priority": 5,
+      "actions": [
+        "Evacuate Region Immediately",
+        "Deploy Rescue Teams",
+        "Activate Emergency Shelters",
+        "Evacuate Hillside Communities Immediately",
+        "Close Mountain Roads",
+        "Deploy Geological Survey Team",
+        "Priority: 780 residents in affected area",
+        "Monitor upstream debris accumulation",
+        "Evacuate downstream communities"
+      ],
+      "reasons": [
+        "Flood probability (85.0%) exceeded critical threshold (80%) with high population density (780)",
+        "Landslide probability (82.0%) critical on steep terrain (slope=34°)",
+        "COMPOUND EVENT: Landslide + Flood — debris dam formation risk"
+      ],
+      "xai_explanation": "[Scenario F - DISASTER XAI Explanation]\n  1. NEURAL PERCEPTION : flood_probability=85.00%, landslide_probability=82.00%, rainfall_mm=19500.00%, soil_moisture=88.00%, terrain_slope_degrees=34\n  2. EVIDENCE FUSION   : Dual-model fusion: U-Net flood=0.85, ResNet landslide=0.82; compound rule triggers — debris dam upstream warning issued.\n  3. POLICY DECISION   : RED triggered — Flood probability (85.0%) exceeded critical threshold (80%) with high population density (780)",
+      "confidence": "HIGH",
+      "audit_trail": {
+        "engine_version": "1.0-POC",
+        "rule_set": "neuro_symbolic_v1",
+        "decision_method": "symbolic_rule_engine + bayesian_fusion"
+      }
+    }
+  ]
+}
