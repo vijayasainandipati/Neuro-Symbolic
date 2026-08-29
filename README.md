@@ -99,6 +99,75 @@ When internet and cellular infrastructure collapses:
 | **Border Radius** | 4px–6px subtle rounded corners |
 | **Status Indicators** | 🟢 **Verified/Supported** (`#15803d`) &bull; 🟠 **Conflicting** (`#b45309`) &bull; 🔴 **Urgent/Unsupported** (`#b91c1c`) |
 
+## 📚 Official Evidence Retrieval (RAG) Architecture
+
+> **The RAG is NOT a chatbot and NOT web search.**  
+> It is an **Official Evidence Retrieval Engine** that grounds incoming disaster messages against verified sovereign guidance documents (NDMA, SACHET, IMD, CWC, TNSDMA, Kanyakumari DDMA).
+
+```text
+1. INCOMING MESSAGE
+   "Shelter A is closed and flooded." (Community WhatsApp)
+          │
+          ▼
+2. LLM STRUCTURED EXTRACTION
+   Event: Cyclone & Flood | Location: Zone A | Entity: Shelter A | Action: CLOSED | Time: 14:30 IST
+          │
+          ▼
+3. HYBRID METADATA FILTER & RETRIEVAL
+   Filter: [District=Kanyakumari, Hazard=Cyclone, Authority=Tier 1-2] + Semantic Search
+          │
+          ▼
+4. RETRIEVED OFFICIAL EVIDENCE (EVIDENCE PACK)
+   "Shelter A (Govt Model School) is FULLY OPERATIONAL (OPEN 24/7) with 350 available spaces."
+   Source: District Relief Commissioner Bulletin Ref: KK_SHELTER_2026_02 | Updated: 14:35 IST
+          │
+          ▼
+5. SYMBOLIC CONFLICT COMPARISON
+   Claim: CLOSED vs Evidence: OPEN_24_7 ➔ Direct Contradiction
+   Rule Applied: RULE_3_OFFICIAL_CONFLICT (Tier 1 Sovereign > Tier 5 Community)
+          │
+          ▼
+6. VERIFICATION DECISION
+   Status: 🟠 CONFLICTING (Flagged with explainable reason)
+          │
+          ▼
+7. HUMAN OFFICER APPROVAL
+   Officer reviews evidence ➔ Authorizes synthesized 4-Q digest ➔ Broadcasts to citizens
+```
+
+### 📁 Knowledge Base Folder Structure
+
+```text
+knowledge_base/
+├── national/
+│   └── ndma_flood_sop.txt             # NDMA Flood SOP & evacuation cutoffs
+├── alerts/
+│   └── sachet_alert_examples.txt      # SACHET / CAP warning bulletins & rumor neutralization protocols
+├── weather/
+│   └── imd_cyclone_warning.txt        # IMD Cyclone Varun storm surge & windspeed tracking
+├── flood/
+│   └── cwc_flood_bulletin.txt         # Central Water Commission river levels & bridge scour data
+├── tamilnadu/
+│   └── tnsdma_disaster_plan.txt       # State disaster response framework & DEOC inter-agency standards
+└── kanyakumari/
+    ├── evacuation_plan.txt            # Mandatory Zone A evacuation order & SH-44 green corridor
+    └── shelter_directory.txt          # Active shelter registry (Shelter A open 24/7 with 350 spaces)
+```
+
+### 🏷️ Chunk Metadata Schema
+
+| Field | Example Value | Description |
+| :--- | :--- | :--- |
+| `document_id` | `KK_EVAC_2026_01` | Unique sovereign document reference |
+| `source` | `Kanyakumari DDMA` | Issuing government agency / department |
+| `authority` | `Tier 1` | Tier 1 (Sovereign) / Tier 2 (Police/Services) / Tier 3 (IMD/CWC) |
+| `hazard` | `Cyclone & Flood` | Disaster hazard category for pre-filtering |
+| `district` | `Kanyakumari` | Geographic administrative boundary |
+| `language` | `English / Tamil` | Document publication language |
+| `issued_date` | `2026-08-29` | Timestamp for temporal freshness calculation |
+| `expiry_date` | `2026-08-30` | Document validity expiration |
+| `section` | `Evacuation Order` | Heading-aware context anchor |
+
 ---
 
 ## ⚖️ Symbolic Logic Rules Catalog (`reasoning/symbolic_rules.py`)
@@ -106,10 +175,10 @@ When internet and cellular infrastructure collapses:
 | Rule ID | Name | Trigger Condition | Output Status | Confidence |
 | :--- | :--- | :--- | :--- | :--- |
 | `RULE_1` | **Official Supported** | Source = Official $\land$ Grounded in Official Guidance | 🟢 **SUPPORTED** | 99% |
-| `RULE_2` | **Community Corroborated** | Source $\neq$ Official $\land$ Official Evidence Corroborates | 🟢 **SUPPORTED** | 89% |
+| `RULE_2` | **Community Corroborated** | Source $\neq$ Official $\land$ Official Evidence Corroborates | 🔵 **CORROBORATED** | 89% |
 | `RULE_3` | **Authoritative Contradiction** | Source $\neq$ Official $\land$ Official Evidence Contradicts | 🟠 **CONFLICTING** *(Rumor)* | 96% |
 | `RULE_4` | **Absence of Evidence** | No authoritative record or unverified assertion | 🔴 **UNSUPPORTED** | 88% |
-| `RULE_5` | **Temporal Supersession** | Older alert contradicted by newer official update | ⚠️ **STALE** | 94% |
+| `RULE_5` | **Temporal Supersession** | Older alert contradicted by newer official update | ⚪ **OUTDATED** | 94% |
 
 ---
 
