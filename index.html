@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>District Emergency Information System — Kanyakumari</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="web/css/styles.css">
+</head>
+<body>
+
+  <!-- Top System Bar -->
+  <header class="top-nav-bar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <span class="flag-icon">🇮🇳</span>
+        <div>
+          <div class="brand-title">DISTRICT EMERGENCY INFORMATION SYSTEM</div>
+          <div class="brand-sub">Kanyakumari District &bull; Disaster Management Authority</div>
+        </div>
+      </div>
+      <div class="role-switcher">
+        <button class="role-btn active" id="btn-gov-role" onclick="switchPortal('gov')">
+          Government Control Room
+        </button>
+        <button class="role-btn" id="btn-citizen-role" onclick="switchPortal('citizen')">
+          Citizen Portal
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-wrapper">
+
+    <!-- ======================================================================= -->
+    <!-- 🏛️ GOVERNMENT DISASTER CONTROL ROOM (5 SCREENS)                        -->
+    <!-- ======================================================================= -->
+    <section id="portal-gov" class="portal-section active">
+      
+      <!-- 5-Tab Government Navigation -->
+      <nav class="gov-subnav" aria-label="Government Control Room Navigation">
+        <button class="gov-nav-tab active" id="g-tab-dashboard" onclick="switchGovScreen('dashboard')">
+          Dashboard
+        </button>
+        <button class="gov-nav-tab" id="g-tab-incoming" onclick="switchGovScreen('incoming')">
+          Incoming Information (<span id="badge-inbox-count">42</span>)
+        </button>
+        <button class="gov-nav-tab" id="g-tab-verification" onclick="switchGovScreen('verification')">
+          Verification (<span id="badge-conflict-count">6 Conflicts</span>)
+        </button>
+        <button class="gov-nav-tab" id="g-tab-digest" onclick="switchGovScreen('digest')">
+          Emergency Digest
+        </button>
+        <button class="gov-nav-tab" id="g-tab-published" onclick="switchGovScreen('published')">
+          Published Alerts
+        </button>
+      </nav>
+
+      <!-- ===================================================================== -->
+      <!-- SCREEN 1: DASHBOARD                                                   -->
+      <!-- ===================================================================== -->
+      <div id="screen-gov-dashboard" class="gov-screen active">
+        
+        <div class="portal-top-bar">
+          <div>
+            <h1 class="portal-title-main">DISTRICT EMERGENCY INFORMATION SYSTEM</h1>
+            <p class="portal-title-sub">Kanyakumari District &bull; 29 Aug 2026</p>
+          </div>
+          <span class="status-pill-online">● SYSTEM ONLINE</span>
+        </div>
+
+        <!-- Active Emergency Hero Summary -->
+        <div class="clean-card" style="border-left: 4px solid #B91C1C; margin-bottom: 16px;">
+          <div style="font-size: 0.76rem; font-weight: 700; color: #B91C1C; text-transform: uppercase;">
+            ACTIVE EMERGENCY
+          </div>
+          <h2 style="font-size: 1.25rem; font-weight: 800; color: #0F172A; margin: 4px 0;">
+            Cyclone &amp; Flood — Zone A / Zone B
+          </h2>
+          <p style="font-size: 0.84rem; color: #475569;">
+            Mandatory coastal evacuation active. Emergency shelters open across district.
+          </p>
+        </div>
+
+        <!-- 4 Stat Boxes -->
+        <div class="kpi-grid-4">
+          <div class="kpi-card">
+            <div class="kpi-card-num" id="kpi-msgs">42</div>
+            <div class="kpi-card-label">Messages</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-card-num" id="kpi-events" style="color: #0284C7;">11</div>
+            <div class="kpi-card-label">Events</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-card-num" id="kpi-conflicts" style="color: #B45309;">6</div>
+            <div class="kpi-card-label">Conflicts</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-card-num" id="kpi-critical" style="color: #B91C1C;">3</div>
+            <div class="kpi-card-label">Critical</div>
+          </div>
+        </div>
+
+        <!-- Control Room Situation Summary (Four Questions) -->
+        <div class="clean-card" style="background: #F8FAFC; margin-bottom: 16px;">
+          <div style="font-size: 0.74rem; font-weight: 800; color: #64748B; text-transform: uppercase; margin-bottom: 10px;">
+            SITUATION BRIEF
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+            <div>
+              <div style="font-size: 0.72rem; color: #64748B; font-weight: 700;">WHAT IS HAPPENING?</div>
+              <div style="font-size: 0.88rem; font-weight: 700; color: #0F172A; margin-top: 2px;">Cyclone &amp; Flood</div>
+            </div>
+            <div>
+              <div style="font-size: 0.72rem; color: #64748B; font-weight: 700;">WHERE?</div>
+              <div style="font-size: 0.88rem; font-weight: 700; color: #0F172A; margin-top: 2px;">Zone A, Zone B</div>
+            </div>
+            <div>
+              <div style="font-size: 0.72rem; color: #64748B; font-weight: 700;">REQUIRES ATTENTION</div>
+              <div style="font-size: 0.88rem; font-weight: 700; color: #B45309; margin-top: 2px;">3 Critical / 6 Conflicts</div>
+            </div>
+            <div>
+              <div style="font-size: 0.72rem; color: #64748B; font-weight: 700;">NEEDS APPROVAL</div>
+              <div style="font-size: 0.88rem; font-weight: 700; color: #15803D; margin-top: 2px;">1 Emergency Digest</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Emergency Information Table -->
+        <div class="clean-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <div style="font-size: 0.84rem; font-weight: 800; color: #0F172A; text-transform: uppercase;">
+              EMERGENCY INFORMATION
+            </div>
+            <button class="btn-text-link" onclick="switchGovScreen('incoming')">View All 42 Messages &rarr;</button>
+          </div>
+
+          <div class="gov-table-wrap">
+            <table class="gov-table">
+              <thead>
+                <tr>
+                  <th style="width: 70px;">Time</th>
+                  <th style="width: 90px;">Location</th>
+                  <th>Information</th>
+                  <th style="width: 140px;">Source</th>
+                  <th style="width: 120px;">Status</th>
+                </tr>
+              </thead>
+              <tbody id="dashboard-table-body">
+                <tr>
+                  <td><b>14:35</b></td>
+                  <td>Zone A</td>
+                  <td>Evacuate before 6 PM via SH-44.</td>
+                  <td>District Authority</td>
+                  <td><span class="badge-verified">🟢 VERIFIED</span></td>
+                </tr>
+                <tr>
+                  <td><b>14:32</b></td>
+                  <td>Zone A</td>
+                  <td>Road completely flooded near coastal bend.</td>
+                  <td>Community Report</td>
+                  <td><span class="badge-corroborated">🔵 CORROBORATED</span></td>
+                </tr>
+                <tr>
+                  <td><b>14:30</b></td>
+                  <td>Shelter A</td>
+                  <td>Shelter A is closed and flooded.</td>
+                  <td>WhatsApp Forward</td>
+                  <td><span class="badge-conflicting">🟠 CONFLICTING</span></td>
+                </tr>
+                <tr>
+                  <td><b>14:25</b></td>
+                  <td>Zone A</td>
+                  <td>Area is safe. No need to evacuate.</td>
+                  <td>WhatsApp Forward</td>
+                  <td><span class="badge-conflicting">🟠 CONFLICTING</span></td>
+                </tr>
+                <tr>
+                  <td><b>14:10</b></td>
+                  <td>North Bridge</td>
+                  <td>North Bridge is open for cars.</td>
+                  <td>Telegram Post</td>
+                  <td><span class="badge-outdated">⚪ OUTDATED</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="display: flex; gap: 10px; margin-top: 14px; justify-content: flex-end;">
+            <button class="btn-secondary-gov" onclick="switchGovScreen('verification')">
+              Review Conflicts (6)
+            </button>
+            <button class="btn-primary-gov" onclick="switchGovScreen('digest')">
+              Prepare Emergency Digest &rarr;
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- ===================================================================== -->
+      <!-- SCREEN 2: INCOMING INFORMATION                                        -->
+      <!-- ===================================================================== -->
+      <div id="screen-gov-incoming" class="gov-screen">
+        
+        <div class="portal-top-bar">
+          <div>
+            <h1 class="portal-title-main">INCOMING INFORMATION</h1>
+            <p class="portal-title-sub">Raw incoming message stream from all disaster channels</p>
+          </div>
+          <button class="btn-primary-gov" onclick="toggleAddModal(true)">
+            + Add Incoming Message
+          </button>
+        </div>
+
+        <!-- Clean Filter Pills -->
+        <div style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
+          <button class="btn-filter-pill active" id="btn-f-all" onclick="setInboxFilter('all')">All (42)</button>
+          <button class="btn-filter-pill" id="btn-f-official" onclick="setInboxFilter('official')">Official (7)</button>
+          <button class="btn-filter-pill" id="btn-f-news" onclick="setInboxFilter('news')">News (8)</button>
+          <button class="btn-filter-pill" id="btn-f-community" onclick="setInboxFilter('community')">Community (15)</button>
+          <button class="btn-filter-pill" id="btn-f-social" onclick="setInboxFilter('social')">Social (12)</button>
+        </div>
+
+        <!-- Add Message Drawer -->
+        <div class="clean-card" id="add-msg-drawer" style="display: none; background: #F8FAFC; margin-bottom: 16px;">
+          <div style="font-size: 0.8rem; font-weight: 700; color: #0F172A; text-transform: uppercase; margin-bottom: 10px;">
+            ADD NEW INCOMING MESSAGE
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+            <div>
+              <label style="font-size: 0.74rem; font-weight: 600; color: #475569;">Source</label>
+              <select id="in-source" style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 3px; margin-top: 2px;">
+                <option value="Community Report">Community Report</option>
+                <option value="District Disaster Management Authority">District Authority</option>
+                <option value="Police Control Room">Police Control Room</option>
+                <option value="Social Media Forward">Social Media Forward</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size: 0.74rem; font-weight: 600; color: #475569;">Location</label>
+              <input type="text" id="in-loc" value="Zone A" style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 3px; margin-top: 2px;">
+            </div>
+          </div>
+          <div style="margin-bottom: 10px;">
+            <label style="font-size: 0.74rem; font-weight: 600; color: #475569;">Message</label>
+            <input type="text" id="in-txt" value="Zone A is safe. Water levels receding." style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 3px; margin-top: 2px;">
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn-primary-gov" onclick="submitIncomingMsg()">Save to Pool</button>
+            <button class="btn-secondary-gov" onclick="toggleAddModal(false)">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Incoming Messages List -->
+        <div id="incoming-stream-container"></div>
+
+      </div>
+
+
+      <!-- ===================================================================== -->
+      <!-- SCREEN 3: VERIFICATION                                                -->
+      <!-- ===================================================================== -->
+      <div id="screen-gov-verification" class="gov-screen">
+        
+        <div class="portal-top-bar">
+          <div>
+            <h1 class="portal-title-main">CLAIM VERIFICATION</h1>
+            <p class="portal-title-sub">Compare unverified reports against sovereign official records</p>
+          </div>
+          <button class="btn-primary-gov" onclick="switchGovScreen('digest')">
+            Go to Emergency Digest &rarr;
+          </button>
+        </div>
+
+        <!-- Verification Item 1 -->
+        <article class="verif-block-card" style="border-left: 4px solid #B45309;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <div class="field-label" style="color: #B45309;">UNVERIFIED CLAIM #01</div>
+            <span class="badge-conflicting">🟠 CONFLICTING</span>
+          </div>
+
+          <div style="font-size: 1.05rem; font-weight: 700; color: #0F172A; margin-bottom: 4px;">
+            &ldquo;Shelter A is closed.&rdquo;
+          </div>
+          <div style="font-size: 0.76rem; color: #64748B; margin-bottom: 12px;">
+            Source: Community Report &bull; WhatsApp Forward
+          </div>
+
+          <div class="verif-grid-2">
+            <div class="verif-side-box" style="background: #F0FDF4; border-color: #BBF7D0;">
+              <div class="field-label" style="color: #15803D;">CURRENT OFFICIAL INFORMATION</div>
+              <div class="field-value-strong" style="font-size: 0.88rem;">
+                Shelter A is open and accepting evacuees until 10 PM.
+              </div>
+              <div class="field-value-meta">
+                Source: District Disaster Management Authority &bull; Updated: 14:35 IST
+              </div>
+            </div>
+
+            <div class="verif-side-box">
+              <div class="field-label">REASON</div>
+              <div style="font-size: 0.88rem; color: #334155; margin-top: 2px;">
+                The claim conflicts with the latest official information.
+              </div>
+              <div style="margin-top: 10px;">
+                <button class="btn-secondary-gov" style="padding: 4px 10px; font-size: 0.76rem;" onclick="openEvidenceModal('Shelter A is fully open, dry, and admitting evacuees 24/7 with dry food rations and medical staff.', 'DDMA Facility Order Ref: DDMA-SHELTER-01')">
+                  View Evidence &rarr;
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Verification Item 2 -->
+        <article class="verif-block-card" style="border-left: 4px solid #B45309;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <div class="field-label" style="color: #B45309;">UNVERIFIED CLAIM #02</div>
+            <span class="badge-conflicting">🟠 CONFLICTING</span>
+          </div>
+
+          <div style="font-size: 1.05rem; font-weight: 700; color: #0F172A; margin-bottom: 4px;">
+            &ldquo;Zone A is safe. No need to evacuate.&rdquo;
+          </div>
+          <div style="font-size: 0.76rem; color: #64748B; margin-bottom: 12px;">
+            Source: Community Report &bull; WhatsApp Group
+          </div>
+
+          <div class="verif-grid-2">
+            <div class="verif-side-box" style="background: #F0FDF4; border-color: #BBF7D0;">
+              <div class="field-label" style="color: #15803D;">CURRENT OFFICIAL INFORMATION</div>
+              <div class="field-value-strong" style="font-size: 0.88rem;">
+                Zone A evacuation is mandatory before 6:00 PM due to storm surge.
+              </div>
+              <div class="field-value-meta">
+                Source: District Disaster Management Authority &bull; Updated: 14:35 IST
+              </div>
+            </div>
+
+            <div class="verif-side-box">
+              <div class="field-label">REASON</div>
+              <div style="font-size: 0.88rem; color: #334155; margin-top: 2px;">
+                The claim conflicts with active mandatory evacuation orders.
+              </div>
+              <div style="margin-top: 10px;">
+                <button class="btn-secondary-gov" style="padding: 4px 10px; font-size: 0.76rem;" onclick="openEvidenceModal('Mandatory Evacuation Directive: Zone A residents must evacuate before 6:00 PM via State Highway 44.', 'DDMA Evacuation Directive Ref: DDMA-EVAC-204')">
+                  View Evidence &rarr;
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Verification Item 3 -->
+        <article class="verif-block-card" style="border-left: 4px solid #64748B;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <div class="field-label" style="color: #64748B;">UNVERIFIED CLAIM #03</div>
+            <span class="badge-outdated">⚪ OUTDATED</span>
+          </div>
+
+          <div style="font-size: 1.05rem; font-weight: 700; color: #0F172A; margin-bottom: 4px;">
+            &ldquo;North River Bridge is open for cars.&rdquo;
+          </div>
+          <div style="font-size: 0.76rem; color: #64748B; margin-bottom: 12px;">
+            Source: Telegram Post &bull; 14:10 IST
+          </div>
+
+          <div class="verif-grid-2">
+            <div class="verif-side-box" style="background: #F0FDF4; border-color: #BBF7D0;">
+              <div class="field-label" style="color: #15803D;">CURRENT OFFICIAL INFORMATION</div>
+              <div class="field-value-strong" style="font-size: 0.88rem;">
+                North River Bridge closed at 14:15 IST due to water scour. Use SH-44 only.
+              </div>
+              <div class="field-value-meta">
+                Source: Traffic Police Advisory &bull; Updated: 14:15 IST
+              </div>
+            </div>
+
+            <div class="verif-side-box">
+              <div class="field-label">REASON</div>
+              <div style="font-size: 0.88rem; color: #334155; margin-top: 2px;">
+                A newer official update is available superseding this report.
+              </div>
+              <div style="margin-top: 10px;">
+                <button class="btn-secondary-gov" style="padding: 4px 10px; font-size: 0.76rem;" onclick="openEvidenceModal('Traffic Police barricaded North River Bridge at 14:15 IST. Traffic redirected to SH-44.', 'Police Dispatch Log Ref: POL-TRAF-1415')">
+                  View Evidence &rarr;
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+
+      <!-- ===================================================================== -->
+      <!-- SCREEN 4: EMERGENCY DIGEST                                            -->
+      <!-- ===================================================================== -->
+      <div id="screen-gov-digest" class="gov-screen">
+        
+        <div class="portal-top-bar">
+          <div>
+            <h1 class="portal-title-main">EMERGENCY DIGEST</h1>
+            <p class="portal-title-sub">Official summarized digest prepared for district release</p>
+          </div>
+        </div>
+
+        <!-- Digest Box -->
+        <article class="digest-container">
+          
+          <div class="digest-header-row">
+            <div>
+              <div style="font-size: 0.76rem; font-weight: 800; color: #B91C1C; text-transform: uppercase;">
+                EMERGENCY DIGEST
+              </div>
+              <h2 style="font-size: 1.3rem; font-weight: 800; color: #0F172A; margin: 2px 0;">
+                Cyclone &amp; Flood
+              </h2>
+              <div style="font-size: 0.82rem; color: #475569;">
+                Kanyakumari District &bull; Issued: 14:35 IST
+              </div>
+            </div>
+            <span class="status-pill-online">● Ready for Approval</span>
+          </div>
+
+          <div class="digest-section">
+            <div class="digest-section-title">AFFECTED AREAS</div>
+            <div class="digest-section-body" style="font-weight: 600;">
+              Zone A<br>
+              Zone B<br>
+              Coastal Wards
+            </div>
+          </div>
+
+          <div class="digest-section">
+            <div class="digest-section-title">IMMEDIATE ACTION</div>
+            <div class="digest-section-body" style="font-weight: 700; color: #B91C1C;">
+              Residents in Zone A should evacuate before 6:00 PM.
+            </div>
+          </div>
+
+          <div class="digest-section">
+            <div class="digest-section-title">SHELTER</div>
+            <div class="digest-section-body">
+              <strong>Shelter A</strong><br>
+              Open until 10:00 PM
+            </div>
+          </div>
+
+          <div class="digest-section">
+            <div class="digest-section-title">IMPORTANT INFORMATION</div>
+            <div class="digest-section-body" style="color: #334155;">
+              A conflicting message claiming <strong>Shelter A is closed</strong> was detected.<br>
+              Current official information confirms that the shelter is open.
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--border-color);">
+            <button class="btn-secondary-gov" onclick="switchGovScreen('verification')">
+              Edit
+            </button>
+            <button class="btn-primary-gov" style="font-size: 0.9rem; padding: 10px 20px;" onclick="approveAndPublishAlert()">
+              Approve &amp; Publish &rarr;
+            </button>
+          </div>
+
+        </article>
+
+      </div>
+
+
+      <!-- ===================================================================== -->
+      <!-- SCREEN 5: PUBLISHED ALERTS                                            -->
+      <!-- ===================================================================== -->
+      <div id="screen-gov-published" class="gov-screen">
+        
+        <div class="clean-card" style="border-left: 4px solid #15803D; padding: 24px;">
+          <div style="font-size: 0.76rem; font-weight: 800; color: #15803D; text-transform: uppercase;">
+            ALERT PUBLISHED
+          </div>
+          <h2 style="font-size: 1.3rem; font-weight: 800; color: #0F172A; margin: 4px 0 2px 0;">
+            Cyclone &amp; Flood
+          </h2>
+          <div style="font-size: 0.85rem; color: #475569; margin-bottom: 16px;">
+            Zone A / Zone B &bull; Published: <span id="pub-time-str">14:36 IST</span> &bull; <span class="badge-verified">● Active</span>
+          </div>
+
+          <div style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: 4px; padding: 12px 16px; margin-bottom: 18px;">
+            <div style="font-size: 0.72rem; font-weight: 700; color: #64748B; text-transform: uppercase; margin-bottom: 4px;">
+              Delivered through
+            </div>
+            <ul style="font-size: 0.85rem; color: #334155; padding-left: 18px; line-height: 1.6;">
+              <li>Government Portal</li>
+              <li>Citizen App</li>
+              <li>Offline Emergency Network</li>
+            </ul>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <button class="btn-secondary-gov" onclick="switchGovScreen('dashboard')">
+              Back to Dashboard
+            </button>
+            <button class="btn-primary-gov" onclick="switchPortal('citizen')">
+              View Citizen Alert &rarr;
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ======================================================================= -->
+    <!-- 👥 CITIZEN PORTAL (VERY SIMPLE)                                         -->
+    <!-- ======================================================================= -->
+    <section id="portal-citizen" class="portal-section">
+      
+      <div class="citizen-container">
+        
+        <!-- Header -->
+        <div class="portal-top-bar" style="margin-bottom: 14px;">
+          <div>
+            <h1 class="portal-title-main" style="font-size: 1.15rem;">DISTRICT EMERGENCY INFORMATION</h1>
+            <p class="portal-title-sub">Kanyakumari District</p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="status-pill-online" id="citizen-net-pill">● CONNECTED</span>
+          </div>
+        </div>
+
+        <!-- Language Switcher -->
+        <div style="display: flex; justify-content: flex-end; gap: 6px; margin-bottom: 12px;">
+          <button class="btn-filter-pill active" id="c-btn-en" onclick="setCitizenLang('en')">English</button>
+          <button class="btn-filter-pill" id="c-btn-ta" onclick="setCitizenLang('ta')">தமிழ் (Tamil)</button>
+        </div>
+
+        <!-- Active Emergency Hero Card -->
+        <article class="citizen-hero-alert" id="c-hero-box">
+          <div style="font-size: 0.74rem; font-weight: 800; color: #B91C1C; text-transform: uppercase;">
+            🔴 ACTIVE EMERGENCY
+          </div>
+          <h2 style="font-size: 1.25rem; font-weight: 800; color: #0F172A; margin: 4px 0 2px 0;" id="c-hero-title">
+            CYCLONE &amp; FLOOD
+          </h2>
+          <div style="font-size: 0.85rem; color: #64748B; margin-bottom: 12px;" id="c-hero-area">
+            Zone A / Zone B
+          </div>
+
+          <div style="font-size: 1rem; font-weight: 700; color: #0F172A; margin-bottom: 14px;" id="c-hero-action">
+            Evacuate Zone A before 6:00 PM.
+          </div>
+
+          <button class="btn-primary-gov" style="width: 100%; justify-content: center; padding: 10px;" onclick="toggleCitizenDetailModal(true)">
+            View Alert Details &rarr;
+          </button>
+        </article>
+
+        <!-- Important Information Card -->
+        <div class="citizen-info-card" id="c-shelter-box">
+          <div style="font-size: 0.74rem; font-weight: 800; color: #15803D; text-transform: uppercase;">
+            IMPORTANT INFORMATION
+          </div>
+          <div style="font-size: 0.95rem; font-weight: 700; color: #0F172A; margin-top: 4px;" id="c-shelter-txt">
+            Shelter A is OPEN until 10 PM.
+          </div>
+          <div style="font-size: 0.76rem; color: #64748B; margin-top: 2px;">
+            Govt Model School &bull; Dry meal rations and medical help available
+          </div>
+        </div>
+
+        <!-- Emergency Contacts -->
+        <div class="citizen-info-card">
+          <div style="font-size: 0.74rem; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 8px;">
+            EMERGENCY CONTACTS
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.88rem; padding: 4px 0; border-bottom: 1px solid var(--border-subtle);">
+            <span>Disaster Control Room</span>
+            <strong style="color: #0284C7;">1077 / 112</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.88rem; padding: 4px 0; border-bottom: 1px solid var(--border-subtle);">
+            <span>Ambulance</span>
+            <strong style="color: #0284C7;">108</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.88rem; padding: 4px 0;">
+            <span>Police Control</span>
+            <strong style="color: #0284C7;">100</strong>
+          </div>
+        </div>
+
+        <!-- Simple SOS Button -->
+        <div style="margin-top: 18px;">
+          <button class="btn-primary-gov" style="width: 100%; background: #B91C1C; border-color: #B91C1C; padding: 12px; justify-content: center; font-size: 0.95rem;" onclick="triggerCitizenSOSModal()">
+            🚨 SEND SOS
+          </button>
+          <div style="text-align: center; font-size: 0.74rem; color: #64748B; margin-top: 6px;">
+            Works offline. Relays automatically through nearby devices if mobile towers fail.
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Evidence Document Modal -->
+  <div id="evidence-modal" class="simple-modal" style="display: none;">
+    <div class="simple-modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 12px;">
+        <strong style="font-size: 0.88rem; text-transform: uppercase;">Official Evidence Record</strong>
+        <button onclick="closeEvidenceModal()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">&times;</button>
+      </div>
+      <div id="evidence-modal-body" style="font-size: 0.9rem; color: #1E293B; line-height: 1.5; margin-bottom: 14px;"></div>
+      <div id="evidence-modal-ref" style="font-size: 0.75rem; color: #64748B; margin-bottom: 16px;"></div>
+      <div style="text-align: right;">
+        <button class="btn-primary-gov" onclick="closeEvidenceModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Citizen Alert Details Modal -->
+  <div id="citizen-detail-modal" class="simple-modal" style="display: none;">
+    <div class="simple-modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 12px;">
+        <strong style="font-size: 0.88rem; text-transform: uppercase;">Official Alert Details</strong>
+        <button onclick="toggleCitizenDetailModal(false)" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">&times;</button>
+      </div>
+      <div style="font-size: 0.92rem; color: #1E293B; line-height: 1.6; margin-bottom: 14px;" id="c-detail-text">
+        <strong>Evacuation Order:</strong> Coastal reaches of Zone A must evacuate before 6:00 PM IST.<br><br>
+        <strong>Designated Corridor:</strong> Use State Highway 44 (SH-44). North River Bridge is closed.<br><br>
+        <strong>Safe Shelter:</strong> Shelter A (Govt Model School) is fully operational with food and medical supplies.
+      </div>
+      <div style="text-align: right;">
+        <button class="btn-primary-gov" onclick="toggleCitizenDetailModal(false)">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Simple Footer -->
+  <footer class="footer-simple">
+    District Disaster Management Authority (DDMA) &bull; Kanyakumari District Operations &bull; 24/7 Helpline: 1077
+  </footer>
+
+  <script src="web/js/app.js"></script>
+</body>
+</html>

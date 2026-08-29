@@ -1,177 +1,107 @@
 """
-Performance metrics for evaluating flood detection models.
-
-Includes:
-  - Pixel-wise accuracy
-  - Precision, Recall, F1 Score
-  - Intersection over Union (IoU / Jaccard Index)
-  - Dice Coefficient
-  - Confusion matrix
-
-All metrics work on both tensors and numpy arrays.
+Performance and evaluation metrics for NeuroSym Crisis.
+Evaluates clustering accuracy, rumor filtering precision/recall/F1, and noise reduction ratio.
 """
 
-import numpy as np
-import torch
+from typing import List, Dict, Any, Tuple
+import math
+from utils.schemas import VerificationStatus
 
 
-def _to_numpy(x):
-    """Convert tensor or array to numpy."""
-    if isinstance(x, torch.Tensor):
-        return x.detach().cpu().numpy()
-    return np.asarray(x)
+def calculate_noise_reduction(raw_count: int, cluster_count: int) -> float:
+    """Calculates percentage noise reduction from raw alerts to event clusters."""
+    if raw_count <= 0:
+        return 0.0
+    reduction = max(0.0, ((raw_count - cluster_count) / raw_count) * 100.0)
+    return round(reduction, 2)
 
 
-def _binarize(pred, threshold=0.5):
-    """Binarize predictions at the given threshold."""
-    return (pred > threshold).astype(np.float32)
-
-
-def pixel_accuracy(pred, target, threshold=0.5):
+def calculate_classification_metrics(y_true: List[str], y_pred: List[str]) -> Dict[str, Any]:
     """
-    Pixel-wise accuracy.
-
-    Parameters
-    ----------
-    pred : array-like
-        Predicted flood probabilities (0-1).
-    target : array-like
-        Ground truth binary mask.
-    threshold : float
-        Binarization threshold.
-
-    Returns
-    -------
-    float
-        Accuracy in [0, 1].
+    Computes overall Accuracy, Macro-F1, and per-class Precision, Recall, F1.
     """
-    pred = _binarize(_to_numpy(pred), threshold)
-    target = _to_numpy(target)
-    return float((pred == target).mean())
+    classes = sorted(list(set(y_true + y_pred)))
+    if not classes:
+        return {"accuracy": 0.0, "macro_f1": 0.0, "per_class": {}}
 
+    total = len(y_true)
+    correct = sum(1 for yt, yp in zip(y_true, y_pred) if yt == yp)
+    accuracy = (correct / total) if total > 0 else 0.0
 
-def precision_score(pred, target, threshold=0.5, eps=1e-7):
-    """
-    Precision = TP / (TP + FP)
+    per_class = {}
+    f1_list = []
 
-    How many predicted flood pixels are actually flooded.
-    """
-    pred = _binarize(_to_numpy(pred), threshold)
-    target = _to_numpy(target)
+    for cls in classes:
+        tp = sum(1 for yt, yp in zip(y_true, y_pred) if yt == cls and yp == cls)
+        fp = sum(1 for yt, yp in zip(y_true, y_pred) if yt != cls and yp == cls)
+        fn = sum(1 for yt, yp in zip(y_true, y_pred) if yt == cls and yp != cls)
 
-    tp = (pred * target).sum()
-    fp = (pred * (1 - target)).sum()
+        prec = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+        rec = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+        f1 = (2 * prec * rec) / (prec + rec) if (prec + rec) > 0 else 0.0
 
-    return float(tp / (tp + fp + eps))
+        per_class[cls] = {
+            "precision": round(prec, 4),
+            "recall": round(rec, 4),
+            "f1_score": round(f1, 4),
+            "support": sum(1 for yt in y_true if yt == cls)
+        }
+        f1_list.append(f1)
 
+    macro_f1 = sum(f1_list) / len(f1_list) if f1_list else 0.0
 
-def recall_score(pred, target, threshold=0.5, eps=1e-7):
-    """
-    Recall = TP / (TP + FN)
-
-    How many actual flood pixels were correctly detected.
-    """
-    pred = _binarize(_to_numpy(pred), threshold)
-    target = _to_numpy(target)
-
-    tp = (pred * target).sum()
-    fn = ((1 - pred) * target).sum()
-
-    return float(tp / (tp + fn + eps))
-
-
-def f1_score(pred, target, threshold=0.5, eps=1e-7):
-    """
-    F1 Score = 2 * (Precision * Recall) / (Precision + Recall)
-
-    Harmonic mean of precision and recall.
-    """
-    p = precision_score(pred, target, threshold, eps)
-    r = recall_score(pred, target, threshold, eps)
-    return float(2 * p * r / (p + r + eps))
-
-
-def iou_score(pred, target, threshold=0.5, eps=1e-7):
-    """
-    Intersection over Union (IoU / Jaccard Index).
-
-    IoU = TP / (TP + FP + FN)
-
-    The most important metric for segmentation tasks.
-    """
-    pred = _binarize(_to_numpy(pred), threshold)
-    target = _to_numpy(target)
-
-    intersection = (pred * target).sum()
-    union = pred.sum() + target.sum() - intersection
-
-    return float(intersection / (union + eps))
-
-
-def dice_coefficient(pred, target, threshold=0.5, eps=1e-7):
-    """
-    Dice Coefficient = 2 * |A ∩ B| / (|A| + |B|)
-
-    Equivalent to F1 for binary segmentation.
-    """
-    pred = _binarize(_to_numpy(pred), threshold)
-    target = _to_numpy(target)
-
-    intersection = (pred * target).sum()
-    return float(2 * intersection / (pred.sum() + target.sum() + eps))
-
-
-def confusion_matrix(pred, target, threshold=0.5):
-    """
-    Compute confusion matrix values.
-
-    Returns
-    -------
-    dict with 'TP', 'FP', 'TN', 'FN' pixel counts.
-    """
-    pred = _binarize(_to_numpy(pred), threshold)
-    target = _to_numpy(target)
-
-    tp = float((pred * target).sum())
-    fp = float((pred * (1 - target)).sum())
-    fn = float(((1 - pred) * target).sum())
-    tn = float(((1 - pred) * (1 - target)).sum())
-
-    return {"TP": tp, "FP": fp, "TN": tn, "FN": fn}
-
-
-def compute_all_metrics(pred, target, threshold=0.5):
-    """
-    Compute all metrics at once.
-
-    Returns
-    -------
-    dict with all metric values.
-    """
     return {
-        "pixel_accuracy": pixel_accuracy(pred, target, threshold),
-        "precision": precision_score(pred, target, threshold),
-        "recall": recall_score(pred, target, threshold),
-        "f1_score": f1_score(pred, target, threshold),
-        "iou": iou_score(pred, target, threshold),
-        "dice": dice_coefficient(pred, target, threshold),
-        "confusion_matrix": confusion_matrix(pred, target, threshold),
+        "accuracy": round(accuracy, 4),
+        "macro_f1": round(macro_f1, 4),
+        "per_class": per_class,
+        "total_samples": total
     }
 
 
-def print_metrics(metrics):
-    """Pretty-print a metrics dictionary."""
-    print("┌─────────────────────────────────────┐")
-    print("│     Flood Detection Metrics         │")
-    print("├─────────────────────────────────────┤")
-    print(f"│  Pixel Accuracy : {metrics['pixel_accuracy']:.4f}            │")
-    print(f"│  Precision      : {metrics['precision']:.4f}            │")
-    print(f"│  Recall         : {metrics['recall']:.4f}            │")
-    print(f"│  F1 Score       : {metrics['f1_score']:.4f}            │")
-    print(f"│  IoU (Jaccard)  : {metrics['iou']:.4f}            │")
-    print(f"│  Dice Coeff     : {metrics['dice']:.4f}            │")
-    print("├─────────────────────────────────────┤")
-    cm = metrics['confusion_matrix']
-    print(f"│  TP: {cm['TP']:>8.0f}  FP: {cm['FP']:>8.0f}      │")
-    print(f"│  FN: {cm['FN']:>8.0f}  TN: {cm['TN']:>8.0f}      │")
-    print("└─────────────────────────────────────┘")
+def calculate_rumor_filter_metrics(
+    verified_results: List[Any],
+    ground_truth_rumors: Dict[str, bool]
+) -> Dict[str, float]:
+    """
+    Specifically evaluates the Rumor & Conflict Detection capability.
+    Positive class = Rumor / Conflict / Unsupported claim.
+    """
+    tp, fp, tn, fn = 0, 0, 0, 0
+
+    for res in verified_results:
+        claim_id = getattr(res, "claim_id", "")
+        status = getattr(res, "status", "")
+        if isinstance(status, VerificationStatus):
+            status_str = status.value
+        else:
+            status_str = str(status)
+
+        # Flagged as rumor/conflict if CONFLICTING or UNSUPPORTED
+        pred_is_rumor = status_str in ["CONFLICTING", "UNSUPPORTED"]
+        true_is_rumor = ground_truth_rumors.get(claim_id, False)
+
+        if pred_is_rumor and true_is_rumor:
+            tp += 1
+        elif pred_is_rumor and not true_is_rumor:
+            fp += 1
+        elif not pred_is_rumor and not true_is_rumor:
+            tn += 1
+        else:
+            fn += 1
+
+    total = tp + fp + tn + fn
+    accuracy = (tp + tn) / total if total > 0 else 0.0
+    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+    f1 = (2 * precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
+
+    return {
+        "rumor_accuracy": round(accuracy * 100, 2),
+        "rumor_precision": round(precision * 100, 2),
+        "rumor_recall": round(recall * 100, 2),
+        "rumor_f1": round(f1 * 100, 2),
+        "true_positives": tp,
+        "false_positives": fp,
+        "true_negatives": tn,
+        "false_negatives": fn
+    }

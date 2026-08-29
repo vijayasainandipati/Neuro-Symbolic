@@ -1,35 +1,3 @@
-# ── Core Deep Learning ───────────────────────────────────────────────────────
-torch>=2.0.0
-torchvision>=0.15.0
-
-# ── Image Processing ────────────────────────────────────────────────────────
-opencv-python>=4.8.0
-Pillow>=10.0.0
-
-# ── Scientific Computing ────────────────────────────────────────────────────
 numpy>=1.24.0
-pandas>=2.0.0
-
-# ── Geospatial ──────────────────────────────────────────────────────────────
-rasterio>=1.3.0
-
-# ── Knowledge Graph ─────────────────────────────────────────────────────────
-networkx>=3.1
-
-# ── Explainable AI (XAI) ────────────────────────────────────────────────────
-# Grad-CAM is implemented natively; no extra package required.
-
-# ── Web / API ───────────────────────────────────────────────────────────────
+pydantic>=2.0.0
 requests>=2.31.0
-
-# ── Dashboard (Flask + HTML/CSS) ────────────────────────────────────────────
-flask>=3.0.0
-
-# ── Visualization ───────────────────────────────────────────────────────────
-plotly>=5.18.0
-
-# ── Pretrained Segmentation Models (optional, for U-Net with ResNet encoder) ─
-# segmentation-models-pytorch>=0.3.3
-
-# ── YOLOv8 Object Detection (optional, for fire/defense detection) ──────────
-# ultralytics>=8.0.0

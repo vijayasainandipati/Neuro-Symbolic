@@ -1,447 +1,225 @@
-# 🛡️ Real-Time Neuro-Symbolic Dual-Domain Decision AI
+# 🛡️ NeuroSym Crisis
 
-A research-grade system that combines **deep learning** with **symbolic reasoning** and **explainable AI** to produce **transparent, real-time decisions** for both **disaster response** and **defense monitoring** from satellite / surveillance imagery.
-
-> *"The system fuses deep learning perception (ResNet, U-Net, ViT, ConvLSTM) with symbolic reasoning algorithms (policy rules, knowledge graphs, Bayesian networks) and a Grad-CAM-based XAI layer. This neuro-symbolic architecture enables real-time detection, explainable decision recommendations, and dual-domain operation across disaster and defense scenarios."*
+### **Emergency Information Intelligence + Offline Emergency Mesh**
+> *Turning noisy disaster chaos into verified event intelligence & guaranteeing communication when cellular networks fail.*
 
 ---
 
-## 7-Layer Research Architecture
+> ### 💬 **The Core Pitch**
+> *"During disasters, governments face two lethal bottlenecks: **Information Chaos** (hundreds of conflicting rumors) and **Communication Failure** (cellular towers going dark). **NeuroSym Crisis** solves both: it gives control rooms a pre-dissemination AI intelligence layer to verify and synthesize emergency digests, paired with an offline phone-to-phone emergency mesh (BLE/Wi-Fi Direct) to keep vital SOS alerts moving even with zero internet."*
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│  LAYER 1 — Data Sources                                         │
-│  Sentinel-2 Satellite  +  Surveillance Feeds  +  Weather        │
-│  + WorldPop Population  + NASA DEM Elevation  + Soil Moisture   │
-└─────────────────────────────┬────────────────────────────────────┘
-                              ↓
-┌──────────────────────────────────────────────────────────────────┐
-│  LAYER 2 — Data Processing                                      │
-│  Image preprocessing, resize, normalize, NDWI/NDVI,             │
-│  geo-alignment, tiling                                          │
-└─────────────────────────────┬────────────────────────────────────┘
-                              ↓
-┌──────────────────────────────────────────────────────────────────┐
-│  LAYER 3 — Deep Learning                                        │
-│                                                                  │
-│  DISASTER:                    DEFENSE:                           │
-│  ResNet50 ──→ Features        DefenseObjectClassifier ──→ Class  │
-│  U-Net    ──→ Flood Mask      ThreatScoreEstimator ──→ Score     │
-│  ViT      ──→ Classification                                    │
-│  ConvLSTM ──→ Temporal                                           │
-│                                                                  │
-│  Ensemble Average             Multi-class + Threat Score         │
-└─────────────────────────────┬────────────────────────────────────┘
-                              ↓
-┌──────────────────────────────────────────────────────────────────┐
-│  LAYER 4 — Neuro-Symbolic Reasoning                             │
-│                                                                  │
-│  Bayesian Decision Network ──→ Evidence Fusion                   │
-│  Knowledge Graph (NetworkX) ──→ Entity Relationships             │
-│  Symbolic Rule Engine ──→ Disaster Policy Actions                │
-│  Defense Rule Engine ──→ Border Security Actions                 │
-└─────────────────────────────┬────────────────────────────────────┘
-                              ↓
-┌──────────────────────────────────────────────────────────────────┐
-│  LAYER 5 — Explainable AI (XAI)                                 │
-│                                                                  │
-│  Grad-CAM ──→ Spatial attention heatmaps                         │
-│  Explanation Generator ──→ Natural-language reasoning trace      │
-│  Full Narrative ──→ Neural + Bayesian + Symbolic chain           │
-└─────────────────────────────┬────────────────────────────────────┘
-                              ↓
-┌──────────────────────────────────────────────────────────────────┐
-│  LAYER 6 — Decision Support System                              │
-│                                                                  │
-│  Sliding Window Predictor ──→ Temporal Smoothing                 │
-│  Event-Driven Alerts ──→ Threshold Notifications                 │
-│  Streamlit Dashboard ──→ Real-Time Visualization                 │
-└──────────────────────────────────────────────────────────────────┘
-                              ↓
-┌──────────────────────────────────────────────────────────────────┐
-│  LAYER 7 — Defense Monitoring                                    │
-│                                                                  │
-│  Object Detection (6 classes: civilian to aircraft/drone)        │
-│  Threat Classification (SAFE → CRITICAL)                         │
-│  Border Surveillance Rules (restricted zone, proximity)          │
-└──────────────────────────────────────────────────────────────────┘
+---
+
+## 🔄 Dual-Engine Architecture (PRD v2.0)
+
+```text
+                             DISASTER EVENT
+                                   │
+                                   ↓
+                         INFORMATION CHAOS & OUTAGE
+                                   │
+         ┌─────────────────────────┴─────────────────────────┐
+         ↓                                                   ↓
+   PROBLEM 1: INFORMATION CHAOS                        PROBLEM 2: NETWORK FAILURE
+         │                                                   │
+         ↓                                                   ↓
+   AI VERIFICATION & EVENT CLUSTERING                  OFFLINE MOBILE MESH
+   (LLM Extraction + RAG + Symbolic Rules)             (BLE / Wi-Fi Direct Store-and-Forward)
+         │                                                   │
+         └─────────────────────────┬─────────────────────────┘
+                                   ↓
+                       🏛️ GOVERNMENT CONTROL ROOM
+                       (11 Events, 6 Conflicts, 3 Offline SOS)
+                                   ↓
+                         HUMAN OFFICER APPROVAL
+                                   ↓
+                    📢 AUTHORIZE & DUAL BROADCAST
+                                   │
+         ┌─────────────────────────┴─────────────────────────┐
+         ↓                                                   ↓
+   SACHET / CAP BROADCAST GATEWAYS                     OFFLINE CITIZEN P2P MESH
+   (Public SMS / Web / App Feeds)                      (Hop-by-Hop Phone Relay)
 ```
 
-## Project Structure
+---
 
-```
-neuro-symbolic-defense-ai/
-├── data/
-│   ├── satellite_images/         # Sentinel-2 satellite images
-│   ├── flood_masks/              # Binary flood segmentation masks
-│   └── population/               # WorldPop population density grids
-│
-├── models/
-│   ├── flood_cnn.py              # U-Net flood segmentation (skip connections)
-│   ├── resnet_flood.py           # ResNet50 classifier + segmentor
-│   ├── conv_lstm.py              # ConvLSTM temporal predictor + segmentor
-│   ├── vision_transformer.py     # Vision Transformer (ViT) classifier
-│   ├── defense_detector.py       # Defense object classifier + threat estimator
-│   ├── dataset_loader.py         # PyTorch dataset with augmentation
-│   └── train_model.py            # Training with BCE + Dice loss
-│
-├── realtime/
-│   ├── satellite_stream.py       # Sentinel-2 Copernicus API data fetcher
-│   ├── inference.py              # Single-model flood prediction
-│   ├── hybrid_pipeline.py        # Dual-domain pipeline + XAI integration
-│   └── streaming.py              # Sliding window + event-driven alerts
-│
-├── symbolic/
-│   ├── policy_rules.py           # Expert decision rules (6-level) + reasons
-│   ├── defense_rules.py          # Border surveillance + threat classification
-│   ├── reasoning_engine.py       # Dual-domain orchestration + audit logging
-│   ├── knowledge_graph.py        # NetworkX knowledge graph reasoning
-│   └── bayesian_network.py       # Bayesian decision network
-│
-├── dashboard/
-│   └── app.py                    # Streamlit dashboard (6 tabs, dual-domain)
-│
-├── utils/
-│   ├── preprocessing.py          # NDWI, NDVI, image tiling
-│   ├── metrics.py                # IoU, F1, Precision, Recall, Dice
-│   └── explainability.py         # Grad-CAM + Symbolic Explanation Generator
-│
-├── main.py                       # Dual-domain pipeline (--defense flag)
-├── poc_simulation.py             # [POC] Deterministic 6-scenario simulation (Section 8.3)
-├── poc_formatter.py              # [POC] Console report + JSON audit log formatter
-├── audit_log.json                # [POC] Auto-generated decision audit log (Section 8.4)
-├── requirements.txt
-└── README.md
+## 📱 Offline Store-and-Forward Mesh Network
+
+When internet and cellular infrastructure collapses:
+
+```text
+   [Citizen A (Trapped)] ──── BLE Beaconing ───➔ [Citizen B (Shopkeeper Device)]
+                                                              │
+                                                        Wi-Fi Direct
+                                                              ↓
+   [DDMA Government Gateway] ⮜── Wi-Fi Aware ─── [Citizen C (Volunteer Node)]
 ```
 
-## Quick Start
+* **Packet Structure:** `message_id`, `sender_id`, `type` (`SOS_MEDICAL`, `SOS_RESCUE`, `REPORT_HAZARD`), `priority` (`CRITICAL`), `location` (`lat`, `lon`), `timestamp`, `hop_count`, `ttl`.
+* **Zero Internet Required:** Uses local SQLite / Room storage to buffer packets until peer discovery occurs.
+* **Bi-Directional:** Citizens send multi-hop SOS alerts; Government broadcasts verified emergency digests back through the mesh.
+  * ✓ Time identified: `Before 6 PM`
+  * ✓ Message clarity: `Good`
+* **Citizen Preview Card:** 🔴 `FLOOD ALERT` — `Zone A residents are advised to evacuate before 6 PM.`
+* **Approve & Send:** Generates published Alert ID (e.g. `NC-2026-0081`), records recipients (`4,820 citizens`), and links directly to citizen view.
 
-### 1. Install Dependencies
+---
 
+### 👥 Portal 2: Citizen Receive Portal
+
+#### **Screen 3: Citizen Home / Emergency Feed**
+* **Header:** `🇮🇳 EMERGENCY INFORMATION | Kanyakumari District | Last updated: 14:35 ● System Active`
+* **Active Emergencies Feed:**
+  * 🔴 **FLOOD — Zone A:** *"Residents are advised to evacuate before 6:00 PM."* &bull; `[ View details → ]`
+  * 🟠 **INFORMATION WARNING:** *"A message circulating online claims that Shelter A is closed. This conflicts with the latest official information."* &bull; `[ Check information → ]`
+
+#### **Screen 4: Emergency Detail & Rumor Verification**
+* **Emergency Detail View:**
+  * **WHAT IS HAPPENING?** Rising water levels have been reported in Zone A.
+  * **WHAT SHOULD YOU DO?** 1. Evacuate before 6 PM, 2. Move to designated shelter, 3. Follow official updates.
+  * **SHELTER:** Shelter A (Open until 10 PM).
+  * **SOURCE:** District Disaster Management Authority (🟢 `VERIFIED OFFICIAL INFORMATION`).
+* **Information Verification (Hero Feature):**
+  * **CLAIM:** *"Shelter A is closed."* (Source: Community message • Time: 14:31)
+  * **STATUS:** 🟠 **CONFLICTING INFORMATION** *(Never "Fake News")*
+  * **OFFICIAL INFORMATION:** *"Shelter A remains operational until 10 PM."* (Source: District Emergency Authority • Updated: 14:35)
+  * **WHY IS THIS FLAGGED?** The claim conflicts with the latest official emergency information. Official information has higher source priority.
+
+---
+
+## 🎨 Visual Design System
+
+| Element | Specification |
+| :--- | :--- |
+| **Background** | Off-white (`#F7F7F5`) |
+| **Cards** | Clean White (`#FFFFFF`) with thin borders (`#D9D9D9`) |
+| **Primary Text** | Dark Charcoal (`#202020`) |
+| **Secondary Text** | Medium Grey (`#666666`) |
+| **Typography** | `Inter` / `Noto Sans` (Standard Indian Government Document Hierarchy) |
+| **Border Radius** | 4px–6px subtle rounded corners |
+| **Status Indicators** | 🟢 **Verified/Supported** (`#15803d`) &bull; 🟠 **Conflicting** (`#b45309`) &bull; 🔴 **Urgent/Unsupported** (`#b91c1c`) |
+
+---
+
+## ⚖️ Symbolic Logic Rules Catalog (`reasoning/symbolic_rules.py`)
+
+| Rule ID | Name | Trigger Condition | Output Status | Confidence |
+| :--- | :--- | :--- | :--- | :--- |
+| `RULE_1` | **Official Supported** | Source = Official $\land$ Grounded in Official Guidance | 🟢 **SUPPORTED** | 99% |
+| `RULE_2` | **Community Corroborated** | Source $\neq$ Official $\land$ Official Evidence Corroborates | 🟢 **SUPPORTED** | 89% |
+| `RULE_3` | **Authoritative Contradiction** | Source $\neq$ Official $\land$ Official Evidence Contradicts | 🟠 **CONFLICTING** *(Rumor)* | 96% |
+| `RULE_4` | **Absence of Evidence** | No authoritative record or unverified assertion | 🔴 **UNSUPPORTED** | 88% |
+| `RULE_5` | **Temporal Supersession** | Older alert contradicted by newer official update | ⚠️ **STALE** | 94% |
+
+---
+
+## 🧪 6 Proof-of-Concept (POC) Validation Scenarios
+
+| Scenario | Objective | Output / Demo Result |
+| :--- | :--- | :--- |
+| **Scenario A** | **Duplicate Flood Alerts** | Fuses redundant flood messages into single unified event with ~71% noise reduction. |
+| **Scenario B** | **Conflicting Shelter Rumors** | Detects "Shelter A closed" rumor; flags `CONFLICTING` against official open status. |
+| **Scenario C** | **Unsupported Alarmist Claims** | Filters ungrounded claims (e.g. "all hospitals closed", "dam burst", "drinking saltwater"). |
+| **Scenario D** | **Official Evacuation Directives** | Prioritizes sovereign disaster authorities with tier-1 confidence weighting. |
+| **Scenario E** | **Stale Emergency Messages** | Detects obsolete route reports superseded by newer police closure advisories. |
+| **Scenario F** | **Full Multi-Source Pipeline (WOW Demo)** | Ingests 12 incoming alerts $\rightarrow$ clusters $\rightarrow$ filters $\rightarrow$ produces verified digest and checklist. |
+
+---
+
+## 🚀 Quickstart & Usage
+
+### 1. Installation
 ```bash
+git clone <repo-url>
+cd "Neuro-Symbolic - Copy"
 pip install -r requirements.txt
 ```
 
-### 2. Run the POC Simulation (No model weights needed)
-
+### 2. Run POC Simulation Suite
 ```bash
 python poc_simulation.py
 ```
 
-This executes all **6 deterministic test scenarios** (A–F) and writes `audit_log.json`. No live data or trained weights are required.
-
-### 3. Prepare Data (for full pipeline)
-
-```
-data/satellite_images/   <- RGB .jpg/.png satellite tiles
-data/flood_masks/         <- Matching grayscale masks (same filenames)
-```
-
-### 4. Train the Models
-
+### 3. Run Pipeline via CLI
 ```bash
-python -m models.train_model
+# Run pipeline on all alerts
+python main.py run
+
+# Verify single custom text or voice transcript
+python main.py verify "Shelter A is closed and flooded" --source "WhatsApp Group"
 ```
 
-### 5. Launch the Dashboard
+### 4. Launch Government & Citizen Portal UI
 
+- **Direct Open:** Simply double-click [`index.html`](file:///c:/Users/Vijayasai/Desktop/Neuro-Symbolic%20-%20Copy/index.html) in your browser.
+- **Local HTTP Server:**
 ```bash
-streamlit run dashboard/app.py
+python -m http.server 8000
 ```
-
-### 6. Run the Continuous Pipeline
-
+- **One-Click Interactive Launcher:**
 ```bash
-python main.py                # Disaster monitoring (default)
-python main.py --defense      # Defense monitoring mode
-python main.py --combined     # Both disaster + defense
-python main.py --cycles 3     # Limit to N cycles
-```
-
-> Set `COPERNICUS_USER` and `COPERNICUS_PASS` environment variables for live Sentinel-2 streaming.
-
----
-
-## POC Simulation — Version 1.0
-
-The `poc_simulation.py` script implements the **Prototype Simulation Plan** from Section 8 of the POC document. It runs 6 fully deterministic scenarios with seeded detection values, applies the neuro-symbolic rule engine, and produces structured outputs in two formats.
-
-### Test Scenarios (Section 8.3)
-
-| ID | Scenario | Domain | Input Image Source | Alert Level | Priority |
-|----|----------|--------|--------------------|-------------|----------|
-| **A** | Coastal Flood Event | DISASTER | Sentinel-1 SAR — Coastal Region | 🔴 RED | 5 |
-| **B** | Urban Fire Outbreak | DISASTER | MODIS Terra Band 21/22 — Urban Thermal | 🔴 RED | 5 |
-| **C** | Landslide Risk Assessment | DISASTER | Sentinel-2 MSI — Western Ghats | 🟠 ORANGE | 4 |
-| **D** | Cyclone Track Landfall | DISASTER | INSAT-3D — Bay of Bengal Track | 🔴 RED | 5 |
-| **E** | Border Defense Intrusion | DEFENSE | SAR — Northern Border Restricted Zone | 🔴 CRITICAL | 5 |
-| **F** | Compound Flood + Landslide | DISASTER | Sentinel-1 + Sentinel-2 Fusion | 🔴 RED | 5 |
-
-### Output Formats
-
-**Console Report (Appendix A)** — printed per scenario:
-
-```
-==================================================================
-         === SYSTEM DECISION REPORT ===
-==================================================================
-  Scenario ID  : A
-  Scenario     : Coastal Flood Event
-  Domain       : DISASTER
-  Image Source : Sentinel-1 SAR -- Coastal Region (12.5m resolution)
-  Timestamp    : 2026-04-06T14:14:54Z
-------------------------------------------------------------------
-  NEURAL DETECTIONS
-  --------------------------------------------------------------
-    Flood Probability              :  88.00%
-    Rainfall Mm                    :  178.00%
-    Elevation M                    :  3.50%
-------------------------------------------------------------------
-  CONTEXT FACTORS
-  --------------------------------------------------------------
-    Region                         :  Coastal Zone Delta
-    Population Density             :  900
-    Elevation M                    :  3.5
-    Rainfall Mm 24H                :  178.0
-------------------------------------------------------------------
-  RULES APPLIED
-  --------------------------------------------------------------
-    >> RULE-F1: flood_prob > 0.80 AND population > 500 -> RED / Evacuate
-    >> RULE-F6: rainfall > 150mm -> escalation amplifier
-------------------------------------------------------------------
-  DECISION OUTCOME
-  --------------------------------------------------------------
-    Alert Level                    :  [RED     ] RED
-    Priority                       :  5
-
-  Actions:
-    *  Evacuate Region Immediately
-    *  Deploy Rescue Teams
-    *  Activate Emergency Shelters
-    *  Monitor rainfall trend closely
-
-  Reason(s):
-    -> Flood probability (88.0%) exceeded critical threshold (80%)
-       with high population density (900)
-------------------------------------------------------------------
-  XAI EXPLANATION
-  --------------------------------------------------------------
-  [Scenario A - DISASTER XAI Explanation]
-    1. NEURAL PERCEPTION : flood_probability=88.00%, rainfall_mm=178.00%
-    2. EVIDENCE FUSION   : Bayesian fusion: P(flood|SAR)=0.91,
-                           P(flood|rainfall)=0.87 -> posterior=0.94
-    3. POLICY DECISION   : RED triggered -- Flood probability (88.0%)
-                           exceeded critical threshold (80%)
-==================================================================
-```
-
-**JSON Audit Log (Section 8.4)** — written to `audit_log.json`:
-
-```json
-{
-  "poc_version": "1.0",
-  "generated_at": "2026-04-06T14:04:42Z",
-  "total_scenarios": 6,
-  "decisions": [
-    {
-      "scenario_id": "A",
-      "scenario_name": "Coastal Flood Event",
-      "domain": "DISASTER",
-      "image_source": "Sentinel-1 SAR - Coastal Region (12.5m resolution)",
-      "neural_detections": { "flood_probability": 0.88, "rainfall_mm": 178.0 },
-      "context_factors": { "population_density": 900, "elevation_m": 3.5 },
-      "rules_applied": [ "RULE-F1: flood_prob > 0.80 AND population > 500 -> RED" ],
-      "alert_level": "RED",
-      "priority": 5,
-      "actions": [ "Evacuate Region Immediately", "Deploy Rescue Teams", "..." ],
-      "xai_explanation": "[Scenario A - DISASTER XAI Explanation]\n  1. NEURAL PERCEPTION...",
-      "audit_trail": {
-        "engine_version": "1.0-POC",
-        "rule_set": "neuro_symbolic_v1",
-        "decision_method": "symbolic_rule_engine + bayesian_fusion"
-      }
-    }
-  ]
-}
+python run_portal.py
 ```
 
 ---
 
-## Deep Learning Model Stack
+## 📂 Project Structure
 
-| Model | Domain | Type | Purpose | Key Feature |
-|-------|--------|------|---------|-------------|
-| **U-Net** | Disaster | Segmentation | Pixel-wise flood mask | Skip connections, BCE+Dice loss |
-| **ResNet50** | Disaster | Classification / Segmentation | Transfer learning features | Pretrained ImageNet, frozen early layers |
-| **Vision Transformer (ViT)** | Disaster | Classification | Global flood detection | Patch embeddings, self-attention |
-| **ConvLSTM** | Disaster | Temporal | Flood progression | CNN spatial + LSTM temporal |
-| **DefenseObjectClassifier** | Defense | Classification | 6-class object detection | CNN backbone → multi-class head |
-| **ThreatScoreEstimator** | Defense | Regression | Threat score (0–1) | CNN backbone → sigmoid head |
-
-### Defense Object Classes
-
-| Class ID | Name | Description |
-|----------|------|-------------|
-| 0 | civilian | No threat — civilian activity |
-| 1 | military_vehicle | Armoured or military transport |
-| 2 | temporary_installation | Camps, temporary structures |
-| 3 | troop_movement | Movement patterns indicating troop activity |
-| 4 | naval_vessel | Maritime military vessel |
-| 5 | aircraft_drone | Aircraft or unmanned aerial vehicle |
+```text
+neurosym-crisis/
+│
+├── index.html                          # Root entry point for Government & Citizen Portal
+├── web/
+│   ├── index.html                      # Standalone Government Control Room & Citizen Portal
+│   ├── css/
+│   │   └── styles.css                  # Modern Indian Government design system (Inter, Clean UI)
+│   └── js/
+│       └── app.js                      # Neuro-Symbolic Verification Engine & UI logic
+│
+├── data/
+│   ├── alerts.json                     # 60+ Realistic disaster alerts across 6 scenarios
+│   └── knowledge_base/                 # Sovereign disaster advisories & ground-truth data
+│       ├── evacuation_guidelines.txt
+│       ├── shelter_status.txt
+│       ├── hospital_status.txt
+│       ├── road_closure.txt
+│       └── cyclone_advisory.txt
+│
+├── models/
+│   ├── embeddings.py                   # Semantic text embeddings & cosine distance
+│   └── llm_extractor.py                # Location, Action, Deadline, Claim extraction
+│
+├── pipeline/
+│   ├── ingestion.py                    # Ingestion, cleaning, voice transcript parsing
+│   ├── source_classifier.py            # Authority tiering & priority weights
+│   ├── clustering.py                   # Semantic duplicate & event clustering
+│   ├── extraction.py                   # Structured claim extraction stage
+│   ├── retrieval.py                    # RAG evidence retrieval & stance scoring
+│   ├── freshness.py                    # Temporal precedence & staleness analyzer
+│   ├── verification.py                 # Pipeline neuro-symbolic orchestrator
+│   └── digest.py                       # Emergency Digest & Shareable Checklist generator
+│
+├── reasoning/
+│   ├── symbolic_rules.py               # Deterministic First-Order Logic rules
+│   ├── verification_engine.py          # Neuro-symbolic verification with explainability
+│   └── audit_logger.py                 # Audit trail logger (audit_log.json)
+│
+├── utils/
+│   ├── schemas.py                      # Data models & schemas
+│   └── metrics.py                      # Precision, Recall, F1, Noise reduction metrics
+│
+├── tests/
+│   └── test_neuro_symbolic.py          # Automated test suite (all 7 layers)
+│
+├── poc_simulation.py                   # Benchmark runner for Scenarios A-F
+├── audit_log.json                      # Real-time decision traces
+├── run_portal.py                       # Interactive launcher script
+├── main.py                             # Unified CLI tool
+├── requirements.txt                    # Cleaned dependencies (numpy, pydantic, requests)
+└── README.md                           # Documentation
+```
 
 ---
 
-## Explainable AI (XAI) Layer
-
-### Grad-CAM (Neural Explanation)
-
-Grad-CAM highlights **which regions of the satellite image** caused the model's prediction by computing gradient-weighted class activation maps on the target convolutional layer.
-
-```
-Input Image → Model Forward Pass → Target Layer Activations
-                                            ↓
-                    Backprop Gradients → Channel Weights
-                                            ↓
-                    Weighted Sum → ReLU → Heatmap Overlay
-```
-
-Supported models: U-Net (bottleneck), ResNet (layer4), ViT (last transformer layer).
-
-### Symbolic Explanation Generator
-
-Produces a **full reasoning narrative** tracing every decision through the pipeline:
-
-```
-[Disaster Response Explanation]
-1. NEURAL PERCEPTION: Strong flood signal detected across 3 models (ensemble: 91.2%).
-   High-confidence models: unet, resnet_classifier, vit.
-2. EVIDENCE FUSION: Bayesian fusion significantly increased the flood estimate
-   (prior 30.0% → posterior 94.2%). Dominant evidence source: satellite.
-3. POLICY DECISION: Alert RED triggered because: Flood probability (94.2%) exceeded
-   critical threshold (80%) with high population density (900).
-```
-
----
-
-## Neuro-Symbolic Reasoning
-
-### Disaster Policy Rules
-
-| Condition | Alert Level | Actions | Reason |
-|-----------|-------------|---------|--------|
-| Flood > 80% & Pop > 500 | 🔴 RED | Evacuate, Deploy Rescue, Activate Shelters | Critical flood + dense population |
-| Flood > 60% & Pop > 200 | 🟠 ORANGE | Warning, Pre-position Boats, Alert Medical | High flood + moderate population |
-| Flood > 60% | 🟡 YELLOW | Send Drone, Notify Authorities | Moderate flood risk |
-| Flood > 40% & Elev < 10m | 🟡 YELLOW | Low-Elevation Alert, Sandbags | Low elevation amplifies risk |
-| Flood > 30% | 🔵 BLUE | Increase Monitoring | Above monitoring threshold |
-| Flood ≤ 30% | 🟢 GREEN | Safe – No action | Below all thresholds |
-
-### Defense Rules
-
-| Condition | Threat Level | Actions |
-|-----------|-------------|---------|
-| Vehicles > 3, moving to border, restricted zone | 🔴 CRITICAL | Alert command, deploy reaction force, activate border defense |
-| High threat (>70%) + military objects near border (<5km) | 🟠 HIGH | Aerial surveillance, brief command, increase patrols |
-| Temporary installation + threat >50% | 🟡 ELEVATED | Recon drone, monitor, log for analysis |
-| Multiple vehicles in border zone | 🟡 ELEVATED | Increase monitoring, cross-reference patterns |
-| Moderate threat or non-civilian | 🔵 GUARDED | Flag for review, schedule follow-up |
-| All normal | 🟢 SAFE | Routine monitoring |
-
-### Knowledge Graph
-
-```
-Region → has_risk → Risk Level → triggers → Policy → deploys → Resources
-```
-
-### Bayesian Decision Network
-
-Fuses evidence using Bayes' theorem:
-- P(flood | satellite), P(flood | rainfall), P(flood | elevation), P(flood | soil moisture)
-- Produces calibrated posterior with confidence score.
-
----
-
-## Innovation: Neuro-Symbolic AI vs Traditional Deep Learning
-
-| Feature | Traditional DL-Only | Our Neuro-Symbolic AI |
-|---------|--------------------|-----------------------|
-| Decision Explainability | ❌ Black-box predictions | ✅ Grad-CAM + rule trace + natural language |
-| Uncertainty Quantification | ❌ Point estimates only | ✅ Bayesian posterior with confidence |
-| Policy Compliance | ❌ Not enforced | ✅ Symbolic rules enforce domain policy |
-| Multi-Source Fusion | ❌ Single model, single input | ✅ 4+ models + Bayesian + Knowledge Graph |
-| Audit Trail | ❌ No logging | ✅ Full timestamped decision log |
-| Domain Adaptability | ❌ Single domain | ✅ Disaster + Defense (dual-domain) |
-| Human Oversight | ❌ No intervention points | ✅ Rule thresholds configurable by experts |
-| Reasoning Transparency | ❌ Cannot explain why | ✅ KG path + Bayesian chain + rule reasons |
-
----
-
-## Example Output (Continuous Pipeline — Disaster Mode)
-
-```
-  Region:          Kerala Sector 4
-  Domain:          DISASTER
-  Event Type:      FLOOD
-  ------------------------------------------------
-  Alert Level:     RED
-  Priority:        5
-  Reason: Flood probability (88.0%) exceeded critical
-          threshold (80%) with high population density (900)
-  Actions:
-    * Evacuate Region Immediately
-    * Deploy Rescue Teams
-    * Activate Emergency Shelters
-```
-
-## Example Output (Continuous Pipeline — Defense Mode)
-
-```
-  Region:          Border Sector Alpha
-  Domain:          DEFENSE
-  Event Type:      DEFENSE
-  ------------------------------------------------
-  Threat Level:    CRITICAL
-  Priority:        5
-  Reason: 5 armoured vehicles moving toward border in restricted zone
-  Actions:
-    * Alert Military Command Immediately
-    * Deploy Rapid Reaction Force
-    * Activate Border Defense Systems
-```
-
-## Research Contribution
-
-This project demonstrates:
-
-- **Neuro-symbolic AI integration** — combining neural perception with symbolic reasoning for principled decision-making
-- **Explainable AI (XAI)** — Grad-CAM spatial explanations + natural-language reasoning narratives
-- **Dual-domain versatility** — same architecture handles disaster response AND defense monitoring
-- **Multi-model ensemble** — ResNet + U-Net + ViT + ConvLSTM for robust predictions
-- **Bayesian uncertainty reasoning** — calibrated probabilities from multiple evidence sources
-- **Knowledge graph reasoning** — structured entity relationships for resource deployment
-- **Real-time monitoring** — continuous satellite data processing with sliding window smoothing
-- **Full auditability** — every decision traceable through the complete reasoning chain
-- **POC-compliant simulation** — deterministic 6-scenario test suite with structured JSON audit logs
-
-This type of system is studied by organizations including **DARPA**, **IBM Research**, and **ESA**.
-
----
-
-## File Reference
-
-| File | Description |
-|------|-------------|
-| `main.py` | Continuous multi-hazard + defense monitoring (CLI flags) |
-| `poc_simulation.py` | POC simulation runner — Scenarios A–F, Section 8.3 |
-| `poc_formatter.py` | Output formatter — Appendix A console + Section 8.4 JSON |
-| `audit_log.json` | Auto-generated on each POC run — full structured audit |
-| `reasoning/decision_engine.py` | Core neuro-symbolic decision orchestrator |
-| `reasoning/symbolic_rules.py` | Symbolic rule functions for all hazard types |
-| `realtime/simulator.py` | Real-time multi-hazard simulation engine |
-| `symbolic/bayesian_network.py` | Bayesian evidence fusion network |
-| `symbolic/knowledge_graph.py` | NetworkX knowledge graph reasoning |
-| `dashboard/app.py` | Streamlit real-time dashboard |
-
-## License
-
-Research use only. See individual dataset licenses for data usage terms.
+## ⚖️ License
+MIT License. Developed for T3.5 Emergency Information Intelligence.
