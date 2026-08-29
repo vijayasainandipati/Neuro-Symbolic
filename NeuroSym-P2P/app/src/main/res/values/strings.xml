@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">NeuroSym P2P</string>
+    <string name="mesh_service_name">NeuroSym Emergency Mesh Service</string>
+</resources>
