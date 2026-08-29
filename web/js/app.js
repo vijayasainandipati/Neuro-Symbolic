@@ -303,8 +303,9 @@ function triggerCitizenSOSModal() {
 function triggerP2PScan() {
   const box = document.getElementById('p2p-simulation-output');
   if (!box) return;
-  box.innerHTML += '<br><span style="color: #FACC15;">[SCAN] Scanning 2.4GHz BLE Advertising channels...</span>';
-  box.innerHTML += '<br><span style="color: #4ADE80;">[FOUND] 3 Active Mesh Nodes in direct radio proximity.</span>';
+  box.innerHTML += '<br><span style="color: #FACC15;">[ALG-1 SCAN] Scanning 2.4GHz BLE Advertising channels without pairing...</span>';
+  box.innerHTML += '<br><span style="color: #38BDF8;">[ALG-2 RSSI] NS-A82F (-48 dBm | Score: 0.94) &bull; NS-B410 (-54 dBm | Score: 0.88) &bull; NS-C770 (-68 dBm | Score: 0.72)</span>';
+  box.innerHTML += '<br><span style="color: #4ADE80;">[FOUND] 4 Multi-Hop Peers discovered in ad-hoc mesh.</span>';
   box.scrollTop = box.scrollHeight;
 }
 
@@ -312,22 +313,23 @@ function triggerP2PTestBroadcast() {
   const box = document.getElementById('p2p-simulation-output');
   if (!box) return;
 
-  box.innerHTML += '<br><span style="color: #F43F5E;">[TX] Sovereign Alert Digitally Signed by DDMA Key (SIG_DDMA_56a356e4...).</span>';
-  box.innerHTML += '<br>[HOP 1] Phone 1 (Govt) ➔ Phone 2 (Relay A) [TTL: 5 ➔ 4]';
+  box.innerHTML += '<br><span style="color: #F43F5E;">[ALG-8 SIGN] Sovereign Alert Signed by DDMA Key (SIG_DDMA_1f00c9a4...).</span>';
+  box.innerHTML += '<br><span style="color: #FACC15;">[ALG-7 PRIORITY] Queued in Rank 0 (CRITICAL Emergency Precedence).</span>';
+  box.innerHTML += '<br>[HOP 1: NS-GOV01 ➔ NS-A82F] Transferring payload... <span style="color: #4ADE80;">ACK Received ✓</span> [TTL: 5 ➔ 4]';
   
   setTimeout(() => {
-    box.innerHTML += '<br>[HOP 2] Phone 2 (Relay A) ➔ Phone 3 (Relay B) [TTL: 4 ➔ 3]';
+    box.innerHTML += '<br>[HOP 2: NS-A82F ➔ NS-B410] Store-and-Forward relay... <span style="color: #4ADE80;">ACK Received ✓</span> [TTL: 4 ➔ 3]';
     box.scrollTop = box.scrollHeight;
   }, 400);
 
   setTimeout(() => {
-    box.innerHTML += '<br>[HOP 3] Phone 3 (Relay B) ➔ Phone 4 (Relay C) [TTL: 3 ➔ 2]';
+    box.innerHTML += '<br>[HOP 3: NS-B410 ➔ NS-CIT05] Final delivery to Citizen Device... <span style="color: #4ADE80;">ACK Received ✓</span> [TTL: 3 ➔ 2]';
     box.scrollTop = box.scrollHeight;
   }, 800);
 
   setTimeout(() => {
-    box.innerHTML += '<br><span style="color: #4ADE80;">[DELIVERED] Phone 5 (Citizen Device) received & verified alert.</span>';
-    box.innerHTML += '<br><span style="color: #38BDF8;">[STATUS] ✓ AUTHENTICATED_GOVERNMENT_ALERT (Total Hops: 4 | Latency: 48ms).</span>';
+    box.innerHTML += '<br><span style="color: #4ADE80;">[CITIZEN NOTIFICATION POPUP] 🔔 "CYCLONE RED ALERT: Evacuate Zone A before 6 PM"</span>';
+    box.innerHTML += '<br><span style="color: #38BDF8;">[STATUS] ✓ AUTHENTICATED_GOVERNMENT_ALERT (Zero Packet Loss | 3 Hops | Latency: 36ms).</span>';
     box.scrollTop = box.scrollHeight;
   }, 1200);
 }

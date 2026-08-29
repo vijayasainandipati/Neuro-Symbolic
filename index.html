@@ -639,47 +639,55 @@
           </span>
         </div>
         <div style="font-size: 0.95rem; font-weight: 600; line-height: 1.4; color: #F8FAFC;">
-          BLE Store-and-Forward Daemon Active
+          P2P Relay Active
         </div>
         <div style="font-size: 0.78rem; color: #94A3B8; margin-top: 4px;">
-          Packets hop automatically across nearby devices until delivered to citizens or government gateways.
+          8-Algorithm Engine: Discovery &bull; RSSI Selection &bull; Store &amp; Forward &bull; ACK + Retry &bull; Deduplication &bull; TTL &bull; Priority Queue &bull; Digital Signature.
         </div>
       </div>
 
       <!-- Nearby Nodes Card -->
       <div class="clean-card" style="margin-bottom: 14px;">
         <div style="font-size: 0.76rem; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 10px;">
-          Nearby Discovered Devices
+          Nearby Discovered BLE Nodes
         </div>
         <div style="display: flex; flex-direction: column; gap: 8px;">
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 4px;">
             <div>
-              <strong style="font-size: 0.85rem; color: #0F172A;">NODE-01 (Govt Control Gateway)</strong>
-              <div style="font-size: 0.72rem; color: #64748B;">Sovereign Signing Authority &bull; Hop 0</div>
+              <strong style="font-size: 0.85rem; color: #0F172A;">NS-GOV01 (Government Control Room)</strong>
+              <div style="font-size: 0.72rem; color: #64748B;">Role: Gateway &bull; Sovereign Key: Active &bull; Hop 0</div>
             </div>
-            <span style="font-size: 0.72rem; font-weight: 700; background: #DCFCE7; color: #15803D; padding: 2px 6px; border-radius: 3px;">Connected</span>
+            <span style="font-size: 0.72rem; font-weight: 700; background: #DCFCE7; color: #15803D; padding: 2px 6px; border-radius: 3px;">Broadcasting</span>
           </div>
 
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 4px;">
             <div>
-              <strong style="font-size: 0.85rem; color: #0F172A;">NODE-02 (Relay Alpha — Shopkeeper)</strong>
-              <div style="font-size: 0.72rem; color: #64748B;">Store-and-Forward Buffer &bull; Hop 1</div>
+              <strong style="font-size: 0.85rem; color: #0F172A;">NS-A82F</strong>
+              <div style="font-size: 0.72rem; color: #64748B;">Role: Relay &bull; RSSI: -48 dBm &bull; Score: 0.94 &bull; Last packet: 2s ago</div>
             </div>
-            <span style="font-size: 0.72rem; font-weight: 700; background: #E0F2FE; color: #0369A1; padding: 2px 6px; border-radius: 3px;">Relay Active</span>
+            <span style="font-size: 0.72rem; font-weight: 700; background: #E0F2FE; color: #0369A1; padding: 2px 6px; border-radius: 3px;">Connected</span>
           </div>
 
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 4px;">
             <div>
-              <strong style="font-size: 0.85rem; color: #0F172A;">NODE-03 (Relay Beta — Volunteer)</strong>
-              <div style="font-size: 0.72rem; color: #64748B;">Store-and-Forward Buffer &bull; Hop 2</div>
+              <strong style="font-size: 0.85rem; color: #0F172A;">NS-B410</strong>
+              <div style="font-size: 0.72rem; color: #64748B;">Role: Relay &bull; RSSI: -54 dBm &bull; Score: 0.88 &bull; Last packet: 4s ago</div>
             </div>
-            <span style="font-size: 0.72rem; font-weight: 700; background: #E0F2FE; color: #0369A1; padding: 2px 6px; border-radius: 3px;">Relay Active</span>
+            <span style="font-size: 0.72rem; font-weight: 700; background: #E0F2FE; color: #0369A1; padding: 2px 6px; border-radius: 3px;">Connected</span>
           </div>
 
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 4px;">
             <div>
-              <strong style="font-size: 0.85rem; color: #0F172A;">NODE-05 (Target Citizen Device)</strong>
-              <div style="font-size: 0.72rem; color: #64748B;">Inundated Sector &bull; Hop 4 Final Destination</div>
+              <strong style="font-size: 0.85rem; color: #0F172A;">NS-C770</strong>
+              <div style="font-size: 0.72rem; color: #64748B;">Role: Relay &bull; RSSI: -68 dBm &bull; Score: 0.72 &bull; Failover Node</div>
+            </div>
+            <span style="font-size: 0.72rem; font-weight: 700; background: #F1F5F9; color: #475569; padding: 2px 6px; border-radius: 3px;">Standby</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 4px;">
+            <div>
+              <strong style="font-size: 0.85rem; color: #0F172A;">NS-CIT05 (Citizen Target Device)</strong>
+              <div style="font-size: 0.72rem; color: #64748B;">Role: Citizen &bull; RSSI: -52 dBm &bull; Hop 3 Final Destination</div>
             </div>
             <span style="font-size: 0.72rem; font-weight: 700; background: #FEF3C7; color: #92400E; padding: 2px 6px; border-radius: 3px;">In Multi-Hop Range</span>
           </div>
