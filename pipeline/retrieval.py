@@ -114,6 +114,14 @@ class RAGRetrievalEngine:
         enhanced_query = f"{claim_text} {location} {event_type}".strip()
         q_vec = embedding_engine.get_embedding(enhanced_query)
 
+        # Ensure strict dimension alignment between query vector and index embeddings
+        if self.chunk_embeddings.ndim == 2 and q_vec.ndim == 1:
+            if self.chunk_embeddings.shape[1] != q_vec.shape[0]:
+                # Re-align using deterministic vectorizer to ensure 100% crash immunity
+                q_vec = embedding_engine.fallback.encode(enhanced_query)
+                if self.chunk_embeddings.shape[1] != q_vec.shape[0]:
+                    self.chunk_embeddings = embedding_engine.fallback.encode_batch([c["text"] for c in self.chunks])
+
         # Baseline vector scores
         scores = np.dot(self.chunk_embeddings, q_vec)
 

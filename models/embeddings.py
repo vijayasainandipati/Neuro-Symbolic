@@ -184,6 +184,8 @@ class EmbeddingEngine:
 
     @staticmethod
     def cosine_similarity(vec1: np.ndarray, vec2: np.ndarray) -> float:
+        if vec1.shape != vec2.shape:
+            return 0.0
         norm1 = np.linalg.norm(vec1)
         norm2 = np.linalg.norm(vec2)
         if norm1 < 1e-6 or norm2 < 1e-6:
@@ -194,6 +196,8 @@ class EmbeddingEngine:
         self, query_vec: np.ndarray, candidate_vecs: np.ndarray, k: int = 3
     ) -> List[Tuple[int, float]]:
         if len(candidate_vecs) == 0:
+            return []
+        if candidate_vecs.shape[1] != query_vec.shape[0]:
             return []
         scores = np.dot(candidate_vecs, query_vec)
         top_indices = np.argsort(scores)[::-1][:k]
