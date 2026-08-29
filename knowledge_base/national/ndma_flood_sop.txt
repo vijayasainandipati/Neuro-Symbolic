@@ -1,0 +1,17 @@
+# NDMA Flood Standard Operating Procedures (SOP)
+Document ID: NDMA_FL_SOP_2026_01
+Source: National Disaster Management Authority (NDMA)
+Authority: Tier 1
+Hazard: Flood
+District: All-India / Tamil Nadu
+Language: English
+Issued Date: 2026-08-01
+Expiry Date: 2026-12-31
+Section: Evacuation Protocols
+
+1. Mandatory Evacuation Procedures
+When water levels breach danger thresholds in coastal or low-lying reach areas (designated Zone A), local authorities must enforce mandatory evacuation before daylight expiration (standard 18:00 IST cutoff). 
+Evacuation routes must use designated highway corridors (e.g. State Highway 44). Compromised bridges or submerged culverts must be immediately closed with physical barricades.
+
+2. Community Broadcast Safety
+Evacuation orders supersede all previous advisory levels. Local community messages advising citizens to remain in active inundation zones must be officially contradicted to prevent life safety hazards.

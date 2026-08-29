@@ -1,0 +1,18 @@
+# SACHET National Disaster Alert Protocol & Warning Bulletins
+Document ID: SACHET_CAP_2026_04
+Source: National Disaster Management Authority (SACHET / CAP Portal)
+Authority: Tier 1
+Hazard: Cyclone / Flash Flood
+District: Kanyakumari
+Language: English / Tamil
+Issued Date: 2026-08-29
+Expiry Date: 2026-08-30
+Section: Official Public Alerts
+
+1. SACHET Red Alert Bulletin #2026-08-29-01
+Cyclone Varun storm surge warning active for Kanyakumari coastal wards.
+Residents of Zone A must strictly follow evacuation directives issued by District Disaster Management Authority (DDMA).
+All 14 designated district emergency shelters are activated with uninterrupted backup generator power and dry meal rations.
+
+2. SACHET Rumor Neutralization Guidance
+False rumors concerning universal shelter closures or premature safety declarations must be actively refuted using official CAP broadcast identifiers.

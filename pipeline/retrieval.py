@@ -15,24 +15,33 @@ from models.embeddings import embedding_engine
 
 class RAGRetrievalEngine:
     def __init__(self, kb_dir: Optional[str] = None):
-        self.kb_dir = kb_dir or os.path.join("data", "knowledge_base")
+        self.kb_dirs = [
+            kb_dir or "knowledge_base",
+            os.path.join("data", "knowledge_base")
+        ]
         self.chunks: List[Dict[str, Any]] = []
         self.chunk_embeddings: Optional[np.ndarray] = None
         self._load_and_index_kb()
 
     def _load_and_index_kb(self):
-        """Loads and indexes knowledge base text files."""
+        """Loads and indexes knowledge base text files from all authoritative folders."""
         self.chunks = []
-        if not os.path.exists(self.kb_dir):
-            return
+        
+        txt_files = []
+        for d in self.kb_dirs:
+            if os.path.exists(d):
+                txt_files.extend(glob.glob(os.path.join(d, "**", "*.txt"), recursive=True))
 
-        txt_files = glob.glob(os.path.join(self.kb_dir, "*.txt"))
         for filepath in txt_files:
             filename = os.path.basename(filepath)
+            category = os.path.basename(os.path.dirname(filepath))
             doc_title = filename.replace("_", " ").replace(".txt", "").title()
 
             with open(filepath, "r", encoding="utf-8") as f:
                 content = f.read()
+
+            # Parse document header metadata
+            metadata = self._parse_header_metadata(content, filename, category)
 
             # Split into granular paragraphs / bullet points
             raw_sections = re.split(r"\n(?=[0-9]+\.|\={3,}|\-\s+)", content)
@@ -40,16 +49,48 @@ class RAGRetrievalEngine:
                 cleaned_sec = sec.strip()
                 if len(cleaned_sec) > 25:
                     self.chunks.append({
-                        "doc_id": f"{filename}#sec{idx+1}",
+                        "doc_id": f"{metadata.get('document_id', filename)}#sec{idx+1}",
                         "doc_title": doc_title,
                         "filename": filename,
+                        "category": category,
                         "text": cleaned_sec,
-                        "issuing_authority": self._extract_authority(cleaned_sec, doc_title)
+                        "source": metadata.get("source", "District Authority"),
+                        "authority": metadata.get("authority", "Tier 1"),
+                        "hazard": metadata.get("hazard", "Cyclone/Flood"),
+                        "district": metadata.get("district", "Kanyakumari"),
+                        "language": metadata.get("language", "English"),
+                        "issued_date": metadata.get("issued_date", "2026-08-29"),
+                        "expiry_date": metadata.get("expiry_date", "2026-08-30"),
+                        "page": metadata.get("page", 1),
+                        "section": metadata.get("section", "Standard Guidelines"),
+                        "issuing_authority": metadata.get("source", self._extract_authority(cleaned_sec, doc_title))
                     })
 
         if self.chunks:
             texts = [c["text"] for c in self.chunks]
             self.chunk_embeddings = embedding_engine.get_embeddings_batch(texts)
+
+    def _parse_header_metadata(self, content: str, filename: str, category: str) -> Dict[str, Any]:
+        meta = {
+            "document_id": filename.replace(".txt", "").upper(),
+            "source": "District Disaster Management Authority",
+            "authority": "Tier 1",
+            "hazard": "Cyclone & Flood",
+            "district": "Kanyakumari",
+            "language": "English",
+            "issued_date": "2026-08-29",
+            "expiry_date": "2026-08-30",
+            "page": 1,
+            "section": category.title()
+        }
+        for line in content.splitlines()[:15]:
+            if ":" in line:
+                key, val = line.split(":", 1)
+                k_clean = key.strip().lower().replace(" ", "_")
+                v_clean = val.strip()
+                if k_clean in meta:
+                    meta[k_clean] = v_clean
+        return meta
 
     def _extract_authority(self, text: str, default_title: str) -> str:
         lines = text.splitlines()

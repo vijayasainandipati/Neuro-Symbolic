@@ -1,0 +1,21 @@
+# District Disaster Management Authority (DDMA) Kanyakumari — Evacuation Directive
+Document ID: KK_EVAC_2026_01
+Source: Kanyakumari DDMA
+Authority: Tier 1
+Hazard: Cyclone
+District: Kanyakumari
+Language: English
+Issued Date: 2026-08-29
+Expiry Date: 2026-08-30
+Page: 12
+Section: Evacuation Order
+
+1. Zone A Mandatory Evacuation Order #KA-204
+Due to Cyclone Varun storm surge and river backflow, mandatory evacuation of Zone A (coastal lowlands) is ordered effective immediately.
+All residents must complete transit before 18:00 IST (6:00 PM) today.
+Designated green corridor: State Highway 44 (SH-44) Northbound.
+North River Bridge is structurally compromised and closed to all vehicular traffic.
+
+2. Transit Assistance
+Special government transport buses and volunteer shuttles are deployed at Zone A Central Bus Stand.
+Citizens requiring medical evacuation or elderly transit should report to Zone A staging post or send SOS via emergency mesh.

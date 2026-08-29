@@ -1,0 +1,18 @@
+# Tamil Nadu State Disaster Management Authority (TNSDMA) Response Plan
+Document ID: TNSDMA_RESP_2026_01
+Source: Tamil Nadu State Disaster Management Authority (TNSDMA)
+Authority: Tier 1
+Hazard: Cyclone & Monsoon Flooding
+District: Kanyakumari
+Language: English / Tamil
+Issued Date: 2026-08-20
+Expiry Date: 2026-12-31
+Section: District Response Protocol
+
+1. Inter-Agency Coordination
+The District Collector as Chairman of DDMA holds sovereign command over all disaster relief, transit corridors, and official public warnings.
+State Disaster Response Force (SDRF) units are placed under direct operational control of District Emergency Operation Centers (DEOC).
+
+2. Relief Camp Standards
+All designated multipurpose cyclone shelters and school-based relief shelters must provide dry rations, potable drinking water, clean sleeping mats, baby formula, and emergency power backup.
+Intake registers must be maintained 24/7.
