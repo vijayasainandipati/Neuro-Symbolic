@@ -107,14 +107,17 @@ class EmbeddingEngine:
         # 1. Try Ollama local embedding endpoint if live
         if self._is_ollama_live():
             ollama_emb = self._get_ollama_embedding(text)
-            if ollama_emb is not None:
+            if ollama_emb is not None and len(ollama_emb) > 0:
                 return ollama_emb
 
         # 2. Try SentenceTransformer if loaded
         if self.use_neural and self.st_model is not None:
-            emb = self.st_model.encode(text, convert_to_numpy=True)
-            norm = np.linalg.norm(emb)
-            return emb / norm if norm > 0 else emb
+            try:
+                emb = self.st_model.encode(text, convert_to_numpy=True)
+                norm = np.linalg.norm(emb)
+                return emb / norm if norm > 0 else emb
+            except Exception:
+                pass
 
         # 3. Deterministic Lightweight Fallback
         return self.fallback.encode(text)
@@ -143,7 +146,41 @@ class EmbeddingEngine:
         return None
 
     def get_embeddings_batch(self, texts: List[str]) -> np.ndarray:
-        return np.array([self.get_embedding(t) for t in texts], dtype=np.float32)
+        if not texts:
+            return np.zeros((0, self.fallback.dim), dtype=np.float32)
+
+        # If Ollama is live, try batching with uniform dimension check
+        if self._is_ollama_live():
+            embs = []
+            expected_dim = None
+            all_valid = True
+            for t in texts:
+                emb = self._get_ollama_embedding(t)
+                if emb is None:
+                    all_valid = False
+                    break
+                if expected_dim is None:
+                    expected_dim = len(emb)
+                elif len(emb) != expected_dim:
+                    all_valid = False
+                    break
+                embs.append(emb)
+
+            if all_valid and embs:
+                return np.array(embs, dtype=np.float32)
+
+        # If SentenceTransformer
+        if self.use_neural and self.st_model is not None:
+            try:
+                embs = self.st_model.encode(texts, convert_to_numpy=True)
+                norms = np.linalg.norm(embs, axis=1, keepdims=True)
+                norms[norms == 0] = 1.0
+                return embs / norms
+            except Exception:
+                pass
+
+        # Deterministic uniform fallback
+        return self.fallback.encode_batch(texts)
 
     @staticmethod
     def cosine_similarity(vec1: np.ndarray, vec2: np.ndarray) -> float:
