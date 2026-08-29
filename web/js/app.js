@@ -72,19 +72,24 @@ function switchPortal(portal) {
 
   const btnGov = document.getElementById('btn-gov-role');
   const btnCit = document.getElementById('btn-citizen-role');
+  const btnP2P = document.getElementById('btn-p2p-role');
   const pGov = document.getElementById('portal-gov');
   const pCit = document.getElementById('portal-citizen');
+  const pP2P = document.getElementById('portal-p2p');
+
+  // Remove active from all
+  [btnGov, btnCit, btnP2P].forEach(b => { if (b) b.classList.remove('active'); });
+  [pGov, pCit, pP2P].forEach(p => { if (p) p.classList.remove('active'); });
 
   if (portal === 'gov') {
-    btnGov.classList.add('active');
-    btnCit.classList.remove('active');
-    pGov.classList.add('active');
-    pCit.classList.remove('active');
-  } else {
-    btnCit.classList.add('active');
-    btnGov.classList.remove('active');
-    pCit.classList.add('active');
-    pGov.classList.remove('active');
+    if (btnGov) btnGov.classList.add('active');
+    if (pGov) pGov.classList.add('active');
+  } else if (portal === 'citizen') {
+    if (btnCit) btnCit.classList.add('active');
+    if (pCit) pCit.classList.add('active');
+  } else if (portal === 'p2p') {
+    if (btnP2P) btnP2P.classList.add('active');
+    if (pP2P) pP2P.classList.add('active');
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -289,6 +294,42 @@ function toggleCitizenDetailModal(show) {
 
 function triggerCitizenSOSModal() {
   alert('🚨 SOS Signal Beaconed. Your distress signal has been queued and relayed to the District Control Room.');
+}
+
+// ==========================================
+// 6. P2P Emergency Mesh Simulation Triggers
+// ==========================================
+
+function triggerP2PScan() {
+  const box = document.getElementById('p2p-simulation-output');
+  if (!box) return;
+  box.innerHTML += '<br><span style="color: #FACC15;">[SCAN] Scanning 2.4GHz BLE Advertising channels...</span>';
+  box.innerHTML += '<br><span style="color: #4ADE80;">[FOUND] 3 Active Mesh Nodes in direct radio proximity.</span>';
+  box.scrollTop = box.scrollHeight;
+}
+
+function triggerP2PTestBroadcast() {
+  const box = document.getElementById('p2p-simulation-output');
+  if (!box) return;
+
+  box.innerHTML += '<br><span style="color: #F43F5E;">[TX] Sovereign Alert Digitally Signed by DDMA Key (SIG_DDMA_56a356e4...).</span>';
+  box.innerHTML += '<br>[HOP 1] Phone 1 (Govt) ➔ Phone 2 (Relay A) [TTL: 5 ➔ 4]';
+  
+  setTimeout(() => {
+    box.innerHTML += '<br>[HOP 2] Phone 2 (Relay A) ➔ Phone 3 (Relay B) [TTL: 4 ➔ 3]';
+    box.scrollTop = box.scrollHeight;
+  }, 400);
+
+  setTimeout(() => {
+    box.innerHTML += '<br>[HOP 3] Phone 3 (Relay B) ➔ Phone 4 (Relay C) [TTL: 3 ➔ 2]';
+    box.scrollTop = box.scrollHeight;
+  }, 800);
+
+  setTimeout(() => {
+    box.innerHTML += '<br><span style="color: #4ADE80;">[DELIVERED] Phone 5 (Citizen Device) received & verified alert.</span>';
+    box.innerHTML += '<br><span style="color: #38BDF8;">[STATUS] ✓ AUTHENTICATED_GOVERNMENT_ALERT (Total Hops: 4 | Latency: 48ms).</span>';
+    box.scrollTop = box.scrollHeight;
+  }, 1200);
 }
 
 // Initialize

@@ -28,6 +28,9 @@
         <button class="role-btn" id="btn-citizen-role" onclick="switchPortal('citizen')">
           Citizen Portal
         </button>
+        <button class="role-btn" id="btn-p2p-role" onclick="switchPortal('p2p')">
+          P2P Emergency Relay
+        </button>
       </div>
     </div>
   </header>
@@ -602,6 +605,128 @@
           </div>
         </div>
 
+      </div>
+
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- 📱 PORTAL 3: P2P EMERGENCY RELAY (OFFLINE STORE-AND-FORWARD MESH)       -->
+    <!-- ======================================================================= -->
+    <section id="portal-p2p" class="portal-section" style="max-width: 680px; margin: 0 auto;">
+      
+      <div class="portal-top-bar" style="border-bottom: 2px solid #0284C7; padding-bottom: 12px; margin-bottom: 16px;">
+        <div>
+          <h1 class="portal-title-main" style="color: #0F172A; font-size: 1.25rem; font-weight: 800;">
+            NEUROSYM CRISIS
+          </h1>
+          <p class="portal-title-sub" style="color: #0284C7; font-weight: 700; text-transform: uppercase; font-size: 0.76rem; letter-spacing: 0.05em;">
+            Offline Emergency Network &bull; Phone-to-Phone Mesh
+          </p>
+        </div>
+        <span class="status-pill-online" style="background: #F0FDF4; color: #16A34A; border: 1px solid #BBF7D0; font-weight: 700;">
+          ● OFFLINE MODE (Bluetooth Active)
+        </span>
+      </div>
+
+      <!-- Network Status Card -->
+      <div class="clean-card" style="background: #0F172A; color: #FFFFFF; border: none; margin-bottom: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="font-size: 0.75rem; color: #38BDF8; font-weight: 700; text-transform: uppercase;">
+            Multi-Hop Radio Status
+          </span>
+          <span style="font-size: 0.72rem; background: #1E293B; padding: 2px 8px; border-radius: 4px; color: #94A3B8;">
+            Zero Cellular / Zero Internet
+          </span>
+        </div>
+        <div style="font-size: 0.95rem; font-weight: 600; line-height: 1.4; color: #F8FAFC;">
+          BLE Store-and-Forward Daemon Active
+        </div>
+        <div style="font-size: 0.78rem; color: #94A3B8; margin-top: 4px;">
+          Packets hop automatically across nearby devices until delivered to citizens or government gateways.
+        </div>
+      </div>
+
+      <!-- Nearby Nodes Card -->
+      <div class="clean-card" style="margin-bottom: 14px;">
+        <div style="font-size: 0.76rem; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 10px;">
+          Nearby Discovered Devices
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 4px;">
+            <div>
+              <strong style="font-size: 0.85rem; color: #0F172A;">NODE-01 (Govt Control Gateway)</strong>
+              <div style="font-size: 0.72rem; color: #64748B;">Sovereign Signing Authority &bull; Hop 0</div>
+            </div>
+            <span style="font-size: 0.72rem; font-weight: 700; background: #DCFCE7; color: #15803D; padding: 2px 6px; border-radius: 3px;">Connected</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 4px;">
+            <div>
+              <strong style="font-size: 0.85rem; color: #0F172A;">NODE-02 (Relay Alpha — Shopkeeper)</strong>
+              <div style="font-size: 0.72rem; color: #64748B;">Store-and-Forward Buffer &bull; Hop 1</div>
+            </div>
+            <span style="font-size: 0.72rem; font-weight: 700; background: #E0F2FE; color: #0369A1; padding: 2px 6px; border-radius: 3px;">Relay Active</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 4px;">
+            <div>
+              <strong style="font-size: 0.85rem; color: #0F172A;">NODE-03 (Relay Beta — Volunteer)</strong>
+              <div style="font-size: 0.72rem; color: #64748B;">Store-and-Forward Buffer &bull; Hop 2</div>
+            </div>
+            <span style="font-size: 0.72rem; font-weight: 700; background: #E0F2FE; color: #0369A1; padding: 2px 6px; border-radius: 3px;">Relay Active</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 4px;">
+            <div>
+              <strong style="font-size: 0.85rem; color: #0F172A;">NODE-05 (Target Citizen Device)</strong>
+              <div style="font-size: 0.72rem; color: #64748B;">Inundated Sector &bull; Hop 4 Final Destination</div>
+            </div>
+            <span style="font-size: 0.72rem; font-weight: 700; background: #FEF3C7; color: #92400E; padding: 2px 6px; border-radius: 3px;">In Multi-Hop Range</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Traffic Summary -->
+      <div class="clean-card" style="margin-bottom: 14px;">
+        <div style="font-size: 0.76rem; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 8px;">
+          Mesh Traffic Summary
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center;">
+          <div style="background: #F8FAFC; border: 1px solid #E2E8F0; padding: 10px; border-radius: 4px;">
+            <div style="font-size: 1.25rem; font-weight: 800; color: #B91C1C;">1</div>
+            <div style="font-size: 0.72rem; color: #64748B;">Critical Alert Active</div>
+          </div>
+          <div style="background: #F8FAFC; border: 1px solid #E2E8F0; padding: 10px; border-radius: 4px;">
+            <div style="font-size: 1.25rem; font-weight: 800; color: #16A34A;">3</div>
+            <div style="font-size: 0.72rem; color: #64748B;">Delivered Packets</div>
+          </div>
+          <div style="background: #F8FAFC; border: 1px solid #E2E8F0; padding: 10px; border-radius: 4px;">
+            <div style="font-size: 1.25rem; font-weight: 800; color: #0284C7;">1</div>
+            <div style="font-size: 0.72rem; color: #64748B;">Relaying in Flight</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Relay Test Card -->
+      <div class="clean-card" style="border: 1px solid #CBD5E1; margin-bottom: 16px;">
+        <div style="font-size: 0.76rem; font-weight: 700; color: #0284C7; text-transform: uppercase; margin-bottom: 6px;">
+          Live Store-and-Forward Verification
+        </div>
+        <div id="p2p-simulation-output" style="font-family: monospace; font-size: 0.78rem; background: #0F172A; color: #38BDF8; padding: 12px; border-radius: 4px; line-height: 1.5; height: 120px; overflow-y: auto;">
+          [READY] P2P Daemon Initialized.<br>
+          [RADIO] BLE Channels: 37, 38, 39 Listening.<br>
+          [MESH] Multi-Hop Chain: Govt -> Relay A -> Relay B -> Relay C -> Citizen Ready.
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-primary-gov" style="flex: 1; justify-content: center; background: #1E293B;" onclick="triggerP2PScan()">
+          🔍 Scan Devices
+        </button>
+        <button class="btn-primary-gov" style="flex: 1; justify-content: center; background: #B91C1C; border-color: #B91C1C;" onclick="triggerP2PTestBroadcast()">
+          🚨 Send Test Alert
+        </button>
       </div>
 
     </section>
