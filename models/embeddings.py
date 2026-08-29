@@ -1,21 +1,24 @@
 """
 Semantic Text Embedding & Similarity Engine for NeuroSym Crisis.
 Provides dense vector representations and cosine similarity for clustering and RAG retrieval.
-Supports sentence-transformers with an ultra-fast, robust fallback vectorizer for offline zero-dependency execution.
+Supports local Ollama embeddings (nomic-embed-text, all-minilm, llama3.2), sentence-transformers,
+and an ultra-fast, robust fallback vectorizer for 100% offline zero-dependency execution.
 """
 
+import json
 import math
 import re
+import urllib.request
+import urllib.error
 from typing import List, Tuple, Dict, Any, Optional
 import numpy as np
+import config
 
-# Try importing sentence_transformers if available
 _ST_MODEL = None
 _USE_ST = False
 
 try:
     from sentence_transformers import SentenceTransformer
-    # We will lazy-load if explicitly requested
     _USE_ST = True
 except ImportError:
     _USE_ST = False
@@ -40,10 +43,8 @@ class LightweightSemanticVectorizer:
 
     def _tokenize(self, text: str) -> List[str]:
         text = text.lower()
-        # Clean text
         text = re.sub(r"[^\w\s\-\:]", " ", text)
         tokens = text.split()
-        # Also extract 2-grams
         bigrams = [f"{tokens[i]} {tokens[i+1]}" for i in range(len(tokens)-1)]
         return tokens + bigrams
 
@@ -52,16 +53,12 @@ class LightweightSemanticVectorizer:
         vec = np.zeros(self.dim, dtype=np.float32)
 
         for tok in tokens:
-            # Deterministic hash to dimension bin
             h = hash(tok)
             idx = abs(h) % self.dim
             sign = 1.0 if (h % 2 == 0) else -1.0
-            
-            # Domain weight multiplier
             weight = self.CRISIS_KEYWORDS.get(tok, 1.0)
             vec[idx] += sign * weight
 
-        # L2 normalize
         norm = np.linalg.norm(vec)
         if norm > 1e-6:
             vec = vec / norm
@@ -72,31 +69,81 @@ class LightweightSemanticVectorizer:
 
 
 class EmbeddingEngine:
+    _ollama_available: Optional[bool] = None
+
     def __init__(self, use_neural: bool = False, model_name: str = "all-MiniLM-L6-v2"):
         self.use_neural = use_neural and _USE_ST
         self.fallback = LightweightSemanticVectorizer(dim=128)
         self.st_model = None
 
+        self.ollama_host = config.OLLAMA_HOST
+        self.ollama_model = config.OLLAMA_EMBED_MODEL
+        self.ollama_enabled = config.OLLAMA_ENABLED
+        self.timeout = config.OLLAMA_TIMEOUT_SECONDS
+
         if self.use_neural:
             try:
                 self.st_model = SentenceTransformer(model_name)
-            except Exception as e:
+            except Exception:
                 self.use_neural = False
 
+    def _is_ollama_live(self) -> bool:
+        if not self.ollama_enabled:
+            return False
+        if EmbeddingEngine._ollama_available is not None:
+            return EmbeddingEngine._ollama_available
+
+        try:
+            url = f"{self.ollama_host}/api/tags"
+            req = urllib.request.Request(url)
+            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                EmbeddingEngine._ollama_available = (resp.status == 200)
+        except Exception:
+            EmbeddingEngine._ollama_available = False
+
+        return EmbeddingEngine._ollama_available
+
     def get_embedding(self, text: str) -> np.ndarray:
+        # 1. Try Ollama local embedding endpoint if live
+        if self._is_ollama_live():
+            ollama_emb = self._get_ollama_embedding(text)
+            if ollama_emb is not None:
+                return ollama_emb
+
+        # 2. Try SentenceTransformer if loaded
         if self.use_neural and self.st_model is not None:
             emb = self.st_model.encode(text, convert_to_numpy=True)
             norm = np.linalg.norm(emb)
             return emb / norm if norm > 0 else emb
+
+        # 3. Deterministic Lightweight Fallback
         return self.fallback.encode(text)
 
+    def _get_ollama_embedding(self, text: str) -> Optional[np.ndarray]:
+        req_data = {
+            "model": self.ollama_model,
+            "prompt": text
+        }
+        try:
+            url = f"{self.ollama_host}/api/embeddings"
+            req = urllib.request.Request(
+                url,
+                data=json.dumps(req_data).encode("utf-8"),
+                headers={"Content-Type": "application/json"}
+            )
+            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                if resp.status == 200:
+                    data = json.loads(resp.read().decode("utf-8"))
+                    emb = np.array(data.get("embedding", []), dtype=np.float32)
+                    if len(emb) > 0:
+                        norm = np.linalg.norm(emb)
+                        return emb / norm if norm > 0 else emb
+        except Exception:
+            pass
+        return None
+
     def get_embeddings_batch(self, texts: List[str]) -> np.ndarray:
-        if self.use_neural and self.st_model is not None:
-            embs = self.st_model.encode(texts, convert_to_numpy=True)
-            norms = np.linalg.norm(embs, axis=1, keepdims=True)
-            norms[norms == 0] = 1.0
-            return embs / norms
-        return self.fallback.encode_batch(texts)
+        return np.array([self.get_embedding(t) for t in texts], dtype=np.float32)
 
     @staticmethod
     def cosine_similarity(vec1: np.ndarray, vec2: np.ndarray) -> float:

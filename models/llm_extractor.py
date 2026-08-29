@@ -1,18 +1,23 @@
 """
-Neural Information Understanding & LLM-based Claim Extractor.
-Extracts structured event_type, location, claim, action, and deadline_time from raw crisis text.
-Provides deterministic high-accuracy regex/semantic parsing with a pluggable LLM interface.
+Neural Information Understanding & LLM-based Claim Extractor for NeuroSym Crisis.
+Extracts structured event_type, location, claim, action, deadline_time, and severity from raw crisis text.
+Provides direct integration with local Ollama LLMs (Llama 3.2, Mistral, Gemma 2)
+with automatic fallback to high-accuracy deterministic semantic parsing.
 """
 
+import json
 import re
+import urllib.request
+import urllib.error
 from typing import Dict, Any, Optional
 from utils.schemas import Alert, ExtractedClaim
+import config
 
 
 class LLMExtractor:
     """
     Extracts structured emergency intelligence parameters from unstructured text.
-    Combines neural-inspired pattern recognizers with fallback to LLM APIs when configured.
+    Combines local Ollama inference with deterministic semantic extractors.
     """
 
     KNOWN_LOCATIONS = [
@@ -67,7 +72,102 @@ class LLMExtractor:
         (r"24/7|round the clock|operating 24/7", "Active 24/7")
     ]
 
+    _ollama_available: Optional[bool] = None
+
+    def __init__(self):
+        self.ollama_host = config.OLLAMA_HOST
+        self.ollama_model = config.OLLAMA_LLM_MODEL
+        self.ollama_enabled = config.OLLAMA_ENABLED
+        self.timeout = config.OLLAMA_TIMEOUT_SECONDS
+
+    def _is_ollama_live(self) -> bool:
+        if not self.ollama_enabled:
+            return False
+        if LLMExtractor._ollama_available is not None:
+            return LLMExtractor._ollama_available
+
+        try:
+            url = f"{self.ollama_host}/api/tags"
+            req = urllib.request.Request(url)
+            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                LLMExtractor._ollama_available = (resp.status == 200)
+        except Exception:
+            LLMExtractor._ollama_available = False
+
+        return LLMExtractor._ollama_available
+
     def extract_from_text(self, alert_id: str, text: str) -> ExtractedClaim:
+        """
+        Attempts structured extraction using local Ollama if available,
+        falling back to deterministic semantic rule extraction.
+        """
+        if self._is_ollama_live():
+            ollama_result = self._extract_via_ollama(alert_id, text)
+            if ollama_result is not None:
+                return ollama_result
+
+        return self._extract_deterministic(alert_id, text)
+
+    def _extract_via_ollama(self, alert_id: str, text: str) -> Optional[ExtractedClaim]:
+        """Queries local Ollama instance with structured JSON output enforcement."""
+        prompt = f"""You are an emergency disaster information extractor for government disaster response.
+Extract structured crisis intelligence from this incoming message.
+Output ONLY valid JSON matching this schema:
+{{
+  "event_type": "flood | cyclone | shelter | evacuation | road_closure | dam | power | general",
+  "location": "specific location mentioned (e.g. Zone A, Shelter A, North River Bridge)",
+  "claim": "concise core assertion (1 short sentence)",
+  "action": "recommended protective action",
+  "deadline_time": "time deadline if any (e.g. Before 6:00 PM, or Current)",
+  "severity": "CRITICAL | HIGH | MEDIUM | LOW"
+}}
+
+Message to extract:
+"{text}"
+"""
+        req_data = {
+            "model": self.ollama_model,
+            "prompt": prompt,
+            "stream": False,
+            "format": "json",
+            "options": {
+                "temperature": 0.1,
+                "top_p": 0.9
+            }
+        }
+
+        try:
+            url = f"{self.ollama_host}/api/generate"
+            req = urllib.request.Request(
+                url,
+                data=json.dumps(req_data).encode("utf-8"),
+                headers={"Content-Type": "application/json"}
+            )
+            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                if resp.status == 200:
+                    resp_json = json.loads(resp.read().decode("utf-8"))
+                    raw_output = resp_json.get("response", "")
+                    parsed = json.loads(raw_output)
+
+                    return ExtractedClaim(
+                        alert_id=alert_id,
+                        event_type=parsed.get("event_type", "general"),
+                        location=parsed.get("location", "General District"),
+                        claim=parsed.get("claim", text[:120]),
+                        action=parsed.get("action", "Follow verified instructions from District Disaster Authority"),
+                        deadline_time=parsed.get("deadline_time", "Current"),
+                        severity=parsed.get("severity", "HIGH").upper(),
+                        confidence=0.96,
+                        raw_text=text
+                    )
+        except Exception:
+            # Graceful fallback to deterministic parsing
+            pass
+
+        return None
+
+    def _extract_deterministic(self, alert_id: str, text: str) -> ExtractedClaim:
+        """High-speed deterministic extractor for 100% offline uptime and zero latency."""
         text_lower = text.lower()
 
         # 1. Location extraction
@@ -99,7 +199,7 @@ class LLMExtractor:
 
         # 6. Severity
         severity = "HIGH"
-        if any(w in text_lower for w in ["urgent", "mandatory", "collapse", "burst", "tsunami", "red alert", "danger"]):
+        if any(w in text_lower for w in ["urgent", "mandatory", "collapse", "burst", "tsunami", "red alert", "danger", "trapped"]):
             severity = "CRITICAL"
         elif any(w in text_lower for w in ["routine", "chlorination", "cleared", "smooth", "minor"]):
             severity = "MEDIUM"
@@ -134,9 +234,12 @@ class LLMExtractor:
         return "Follow verified instructions from District Disaster Authority"
 
     def _distill_claim(self, text: str, event_type: str, location: str) -> str:
-        # Strip prefixes like URGENT DDMA NOTICE:, FORWARDED MSG:, BREAKING:
-        cleaned = re.sub(r"^(?:URGENT|DDMA NOTICE|FORWARDED MSG|BREAKING|Health Dept advisory|IMD RED ALERT|Official Warning|TRAFFIC POLICE ENFORCEMENT)[:\s\-]+", "", text, flags=re.IGNORECASE).strip()
-        # First sentence or up to 120 chars
+        cleaned = re.sub(
+            r"^(?:URGENT|DDMA NOTICE|FORWARDED MSG|BREAKING|Health Dept advisory|IMD RED ALERT|Official Warning|TRAFFIC POLICE ENFORCEMENT)[:\s\-]+",
+            "",
+            text,
+            flags=re.IGNORECASE
+        ).strip()
         sentences = re.split(r"[.!?]", cleaned)
         first_sent = sentences[0].strip() if sentences else cleaned
         return first_sent if len(first_sent) > 10 else cleaned[:120]

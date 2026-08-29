@@ -24,7 +24,7 @@
          │                                                   │
          ↓                                                   ↓
    AI VERIFICATION & EVENT CLUSTERING                  OFFLINE MOBILE MESH
-   (LLM Extraction + RAG + Symbolic Rules)             (BLE / Wi-Fi Direct Store-and-Forward)
+   (Ollama Local LLM + RAG + Symbolic Rules)           (BLE / Wi-Fi Direct Store-and-Forward)
          │                                                   │
          └─────────────────────────┬─────────────────────────┘
                                    ↓
@@ -39,6 +39,22 @@
          ↓                                                   ↓
    SACHET / CAP BROADCAST GATEWAYS                     OFFLINE CITIZEN P2P MESH
    (Public SMS / Web / App Feeds)                      (Hop-by-Hop Phone Relay)
+```
+
+---
+
+## 🦙 Local Offline AI Engine (Ollama Integration)
+
+NeuroSym Crisis runs **100% locally and offline** at the disaster control room using [Ollama](https://ollama.com) with zero cloud dependency:
+
+* **LLM Extraction & Understanding:** `llama3.2` / `mistral` / `gemma2` (via `http://localhost:11434/api/generate` with structured JSON output enforcement).
+* **Dense Vector Embeddings:** `nomic-embed-text` / `all-minilm` (via `http://localhost:11434/api/embeddings`).
+* **Zero-Downtime Fallback:** If Ollama is not installed or the daemon is paused, the engine automatically falls back to our sub-millisecond deterministic semantic vectorizer without crashing.
+
+```powershell
+# Optional: Pull local models for high-speed offline inference
+ollama pull llama3.2
+ollama pull nomic-embed-text
 ```
 
 ---
