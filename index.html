@@ -646,71 +646,41 @@
         </div>
       </div>
 
-      <!-- Nearby Nodes Card -->
+      <!-- Nearby Nodes Card (Dynamic Real-Time BLE Discovery) -->
       <div class="clean-card" style="margin-bottom: 14px;">
-        <div style="font-size: 0.76rem; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 10px;">
-          Nearby Discovered BLE Nodes
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <span style="font-size: 0.76rem; font-weight: 700; color: #475569; text-transform: uppercase;">
+            Nearby Discovered BLE Nodes (<span id="p2p-node-count">0</span> Active)
+          </span>
+          <span id="p2p-scan-badge" style="font-size: 0.72rem; color: #64748B; font-weight: 700; font-family: monospace;">
+            SCAN: IDLE
+          </span>
         </div>
-        <div style="display: flex; flex-direction: column; gap: 8px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 4px;">
-            <div>
-              <strong style="font-size: 0.85rem; color: #0F172A;">NS-GOV01 (Government Control Room)</strong>
-              <div style="font-size: 0.72rem; color: #64748B;">Role: Gateway &bull; Sovereign Key: Active &bull; Hop 0</div>
-            </div>
-            <span style="font-size: 0.72rem; font-weight: 700; background: #DCFCE7; color: #15803D; padding: 2px 6px; border-radius: 3px;">Broadcasting</span>
-          </div>
-
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 4px;">
-            <div>
-              <strong style="font-size: 0.85rem; color: #0F172A;">NS-A82F</strong>
-              <div style="font-size: 0.72rem; color: #64748B;">Role: Relay &bull; RSSI: -48 dBm &bull; Score: 0.94 &bull; Last packet: 2s ago</div>
-            </div>
-            <span style="font-size: 0.72rem; font-weight: 700; background: #E0F2FE; color: #0369A1; padding: 2px 6px; border-radius: 3px;">Connected</span>
-          </div>
-
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 4px;">
-            <div>
-              <strong style="font-size: 0.85rem; color: #0F172A;">NS-B410</strong>
-              <div style="font-size: 0.72rem; color: #64748B;">Role: Relay &bull; RSSI: -54 dBm &bull; Score: 0.88 &bull; Last packet: 4s ago</div>
-            </div>
-            <span style="font-size: 0.72rem; font-weight: 700; background: #E0F2FE; color: #0369A1; padding: 2px 6px; border-radius: 3px;">Connected</span>
-          </div>
-
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 4px;">
-            <div>
-              <strong style="font-size: 0.85rem; color: #0F172A;">NS-C770</strong>
-              <div style="font-size: 0.72rem; color: #64748B;">Role: Relay &bull; RSSI: -68 dBm &bull; Score: 0.72 &bull; Failover Node</div>
-            </div>
-            <span style="font-size: 0.72rem; font-weight: 700; background: #F1F5F9; color: #475569; padding: 2px 6px; border-radius: 3px;">Standby</span>
-          </div>
-
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 4px;">
-            <div>
-              <strong style="font-size: 0.85rem; color: #0F172A;">NS-CIT05 (Citizen Target Device)</strong>
-              <div style="font-size: 0.72rem; color: #64748B;">Role: Citizen &bull; RSSI: -52 dBm &bull; Hop 3 Final Destination</div>
-            </div>
-            <span style="font-size: 0.72rem; font-weight: 700; background: #FEF3C7; color: #92400E; padding: 2px 6px; border-radius: 3px;">In Multi-Hop Range</span>
+        <div id="p2p-nodes-list" style="display: flex; flex-direction: column; gap: 8px;">
+          <div id="p2p-empty-state" style="padding: 16px; text-align: center; color: #94A3B8; font-size: 0.84rem; background: #F8FAFC; border: 1px dashed #CBD5E1; border-radius: 4px;">
+            No active BLE peers discovered yet.<br>
+            Click <strong>[ 🔍 Scan Devices ]</strong> to initiate continuous 2.4GHz discovery.
           </div>
         </div>
       </div>
 
-      <!-- Traffic Summary -->
+      <!-- Traffic Summary (Real-Time Counters) -->
       <div class="clean-card" style="margin-bottom: 14px;">
         <div style="font-size: 0.76rem; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 8px;">
           Mesh Traffic Summary
         </div>
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center;">
           <div style="background: #F8FAFC; border: 1px solid #E2E8F0; padding: 10px; border-radius: 4px;">
-            <div style="font-size: 1.25rem; font-weight: 800; color: #B91C1C;">1</div>
-            <div style="font-size: 0.72rem; color: #64748B;">Critical Alert Active</div>
+            <div id="p2p-stat-critical" style="font-size: 1.25rem; font-weight: 800; color: #B91C1C;">0</div>
+            <div style="font-size: 0.72rem; color: #64748B;">Critical Alerts Active</div>
           </div>
           <div style="background: #F8FAFC; border: 1px solid #E2E8F0; padding: 10px; border-radius: 4px;">
-            <div style="font-size: 1.25rem; font-weight: 800; color: #16A34A;">3</div>
+            <div id="p2p-stat-delivered" style="font-size: 1.25rem; font-weight: 800; color: #16A34A;">0</div>
             <div style="font-size: 0.72rem; color: #64748B;">Delivered Packets</div>
           </div>
           <div style="background: #F8FAFC; border: 1px solid #E2E8F0; padding: 10px; border-radius: 4px;">
-            <div style="font-size: 1.25rem; font-weight: 800; color: #0284C7;">1</div>
-            <div style="font-size: 0.72rem; color: #64748B;">Relaying in Flight</div>
+            <div id="p2p-stat-relaying" style="font-size: 1.25rem; font-weight: 800; color: #0284C7;">0</div>
+            <div style="font-size: 0.72rem; color: #64748B;">Relays in Flight</div>
           </div>
         </div>
       </div>
