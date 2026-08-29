@@ -61,6 +61,10 @@ ENV/
 env.bak/
 venv.bak/
 
+# Vector DB & Local Storage
+chroma_db/
+.chroma/
+
 # Datasets and Large Binary Files
 datasets/
 data/
@@ -83,6 +87,7 @@ data/
 .DS_Store
 Thumbs.db
 desktop.ini
+.gemini/
 
 # Logs
 *.log
